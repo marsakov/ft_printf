@@ -11,12 +11,12 @@
 /* ************************************************************************** */
 
 #include <stdio.h>
-
-
+#include "libft/includes/libft.h"
 
 int		main(int argc, char const *argv[])
 {
-	//printf("%04.3o", 42);
-	printf("%6x\n", 15);
+	printf(0, 333);
+	// printf("%04.3o", 42);
+	// printf("%6x\n", 15);
 	return 0;
 }

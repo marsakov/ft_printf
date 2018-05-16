@@ -10,26 +10,39 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdarg.h>
-#include "libft/includes/libft.h"
 #include "ft_printf.h"
-
-int		print_s(char *s)
-{
-	int		i;
-
-	i = 0;
-	while (s && s[i])
-		ft_putchar(s[i++]);
-	return (i);
-}
 
 int		print_lu(unsigned long int n, int bytes)
 {
 	if (n >= 10)
 		bytes = print_lu(n / 10, bytes);
 	ft_putchar(n % 10 + '0');
+	bytes++;
+	return (bytes);
+}
+
+int		repeat_char(char c, int n)
+{
+	int i;
+
+	if (n < 0)
+		return (0);
+	i = 0;
+	while (i++ < n)
+		ft_putchar(c);
+	return (i - 1);
+}
+
+int		count_unsign_base(long int n, int base)
+{
+	int bytes;
+
+	bytes = 0;
+	while (n >= base)
+	{
+		n /= base;
+		bytes++;
+	}
 	bytes++;
 	return (bytes);
 }
@@ -42,17 +55,30 @@ int		count_base(long int n, int base)
 	if (n == -2147483648 && base == 10)
 		return (11);
 	if (n < 0)
-	{
-		if (base == 10)
-			bytes++;
 		n *= -1;
-	}
 	while (n >= base)
 	{
 		n /= base;
 		bytes++;
 	}
 	bytes++;
+	return (bytes);
+}
+
+int		print_unsign_base(unsigned int n, int base, int bytes, int upper)
+{
+	if (n >= base)
+		bytes = print_base(n / base, base, bytes, upper);
+	if (bytes == 0)
+		return (0);
+	if (n % base > 9)
+		if (upper)
+			ft_putchar(n % base + 'A' - 10);
+		else
+			ft_putchar(n % base + 'a' - 10);
+	else
+		ft_putchar(n % base + '0');
+	bytes--;
 	return (bytes);
 }
 
@@ -64,16 +90,11 @@ int		print_base(long int n, int base, int bytes, int upper)
 		return (11);
 	}
 	if (n < 0)
-	{
-		if (base == 10)
-		{
-			ft_putchar('-');
-			bytes++;
-		}
 		n *= -1;
-	}
 	if (n >= base)
 		bytes = print_base(n / base, base, bytes, upper);
+	if (bytes == 0)
+		return (0);
 	if (n % base > 9)
 		if (upper)
 			ft_putchar(n % base + 'A' - 10);
@@ -81,6 +102,6 @@ int		print_base(long int n, int base, int bytes, int upper)
 			ft_putchar(n % base + 'a' - 10);
 	else
 		ft_putchar(n % base + '0');
-	bytes++;
+	bytes--;
 	return (bytes);
 }
