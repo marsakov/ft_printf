@@ -78,7 +78,7 @@ int		print_unsign_base(unsigned int n, int base, int bytes, int upper)
 			ft_putchar(n % base + 'a' - 10);
 	else
 		ft_putchar(n % base + '0');
-	bytes--;
+	bytes++;
 	return (bytes);
 }
 

@@ -18,8 +18,8 @@
 
 typedef struct	s_frmt
 {
-	int			max_width;
-	int			min_width;
+	int			max;
+	int			min;
 	char		modifier;
 	char		spec;
 	char		flag;

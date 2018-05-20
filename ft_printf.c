@@ -20,92 +20,14 @@ int		check_number(char *str, int i)
 		return (0);
 }
 
-int		check_conv3(char *str, int i, va_list ap)
-{
-	unsigned long int	lud;
-	int					bytes;
-
-	if (str[i] == 'U')
-	{
-		lud = va_arg(ap, unsigned long int);
-		bytes = print_lu(lud, 0);
-	}
-	else if (str[i] == 'O')
-	{
-		lud = va_arg(ap, unsigned long int);
-		bytes = print_lu(lud, 0);
-	}
-	else if (str[i] == '%')
-	{
-		ft_putchar(str[i]);
-		bytes = 1;
-	}
-	return (bytes);
-}
-
-int		check_conv2(char *str, int i, va_list ap)
-{
-	char	*s;
-	char	c;
-	int		d;
-	int		bytes;
-
-	bytes = 0;
-	if (str[i] == 's')
-	{
-		s = va_arg(ap, char *);
-		bytes = ft_putstr(s);
-	}
-	else if (str[i] == 'c')
-	{
-		c = va_arg(ap, int);
-		ft_putchar((char)c);
-		bytes++;
-	}
-	else if (str[i] == 'd' || str[i] == 'i' || str[i] == 'u')
-	{
-		d = va_arg(ap, long int);
-		bytes = print_base(d, 10, 0, 0);
-	}
-	else
-		bytes = check_conv3(str, i, ap);
-	return (bytes);
-}
-
-int		check_conv1(char *str, int i, va_list ap)
-{
-	long int			d;
-	unsigned long int	ld;
-	int					bytes;
-
-	bytes = 0;
-	if (str[i] == 'o')
-	{
-		d = va_arg(ap, long int);
-		bytes = print_base(d, 8, 0, 0);
-	}
-	else if (str[i] == 'x')
-	{
-		d = va_arg(ap, long int);
-		bytes = print_base(d, 16, 0, 0);
-	}
-	else if (str[i] == 'X')
-	{
-		d = va_arg(ap, long int);
-		bytes = print_base(d, 16, 0, 1);
-	}
-	else
-		bytes = check_conv2(str, i, ap);
-	return (bytes);
-}
 
 t_frmt	check(char *str, int *i)
 {
 	t_frmt		frmt;
 	char		*s;
 
-	frmt.max_width = 0;
-	frmt.min_width = 0;
+	frmt.max = 0;
+	frmt.min = 0;
 	frmt.modifier = 0;
 	frmt.spec = 0;
 	frmt.flag = 0;
@@ -113,14 +35,14 @@ t_frmt	check(char *str, int *i)
 	if ((s = ft_strchr("#0-+ ", str[(*i)])) != NULL)
 	{
 		frmt.flag = *s;
-		frmt.min_width = check_number(str, *i);
-		*i += count_base(frmt.min_width, 10) + 1;
+		frmt.min = check_number(str, *i);
+		*i += count_base(frmt.min, 10) + 1;
 	}
 	if (str[(*i)] == '.')
 	{
 		frmt.prec = 1;
-		frmt.max_width = check_number(str, *i);
-		*i += count_base(frmt.max_width, 10) + 1;
+		frmt.max = check_number(str, *i);
+		*i += count_base(frmt.max, 10) + 1;
 	}
 	if ((s = ft_strchr("hljz", str[(*i)])) != NULL)
 	{
@@ -143,19 +65,52 @@ int		print_s(t_frmt frmt, va_list ap)
 	s = va_arg(ap, char*);
 	if (frmt.flag == '-')
 	{
-		bytes = (frmt.prec && frmt.max_width <= ft_strlen(s)) ? ft_putnstr(s, frmt.max_width) : ft_putstr(s);
-		return (bytes + repeat_char(' ', frmt.min_width - bytes));
+		bytes = (frmt.prec && frmt.max <= ft_strlen(s)) ? ft_putnstr(s, frmt.max) : ft_putstr(s);
+		return (bytes + repeat_char(' ', frmt.min - bytes));
 	}
 	else if (frmt.flag == '0' || frmt.flag == '+' || frmt.flag == '#')
 	{
-		bytes = (frmt.prec && frmt.max_width <= ft_strlen(s)) ? frmt.max_width : ft_strlen(s);
-		return (repeat_char((frmt.flag == '0') ? '0' : ' ', frmt.min_width - bytes) + ft_putnstr(s, bytes));
+		bytes = (frmt.prec && frmt.max <= ft_strlen(s)) ? frmt.max : ft_strlen(s);
+		return (repeat_char((frmt.flag == '0') ? '0' : ' ', frmt.min - bytes) + ft_putnstr(s, bytes));
 	}
-	else if (frmt.prec && frmt.max_width <= ft_strlen(s))
-		return (ft_putnstr(s, frmt.max_width));
+	else if (frmt.prec && frmt.max <= ft_strlen(s))
+		return (ft_putnstr(s, frmt.max));
 	else
 		return (ft_putstr(s));
 }
+
+// int		print_d(t_frmt f, va_list ap)
+// {
+// 	int		bytes;
+// 	int		minus;
+// 	int		plus;
+// 	int		d;
+
+// 	d = va_arg(ap, int);
+// 	minus = 0;
+// 	plus = 0;
+// 	bytes = 0;
+// 	if (d < 0)
+// 		minus = 1;
+// 	if (f.flag == '+')
+// 		plus = 1;
+// 	if (f.flag)
+// 	{
+// 		if (f.max > f.min || f.flag == '-' || (f.flag == '0' && !f.prec))
+// 		{
+// 			if (minus || plus)
+// 				bytes += ft_putchar(minus ? '-' : '+');
+// 			if (f.flag != '-')
+// 				bytes += repeat_char('0', ((f.max > f.min) ? f.max : f.min) - count_base(d, 10) - (plus ? plus : minus));
+// 		}
+// 		if ((f.flag == '0' && f.prec) || f.flag != '-')
+// 	}
+// 	else
+// 	{
+// 		ft_putnbr(d);
+// 		return (count_base(d, 10));
+// 	}
+// }
 
 int		print_d(t_frmt frmt, va_list ap)
 {
@@ -171,10 +126,10 @@ int		print_d(t_frmt frmt, va_list ap)
 	{
 		if (minus)
 			ft_putchar('-');
-		bytes = (frmt.prec && frmt.max_width > count_base(d, 10)) ? repeat_char('0', frmt.max_width - count_base(d, 10)) : 0;
-		print_base(d, 10, count_base(d, 10), 0);
-		if ((frmt.prec && frmt.max_width < frmt.min_width) || !frmt.prec)
-			bytes += repeat_char(' ', frmt.min_width - bytes - minus - count_base(d, 10));
+		bytes = (frmt.prec && frmt.max > count_base(d, 10)) ? repeat_char('0', frmt.max - count_base(d, 10)) : 0;
+		ft_putnbr(d);
+		if ((frmt.prec && frmt.max < frmt.min) || !frmt.prec)
+			bytes += repeat_char(' ', frmt.min - bytes - minus - count_base(d, 10));
 		return (bytes + count_base(d, 10) + minus);
 	}
 	else if (frmt.flag == '0' || frmt.flag == '#')
@@ -182,28 +137,31 @@ int		print_d(t_frmt frmt, va_list ap)
 		if (minus && frmt.flag == '0' && !frmt.prec)
 			ft_putchar('-');
 		if (frmt.prec)
-			bytes = repeat_char(' ', (frmt.max_width > count_base(d, 10) - minus) ? frmt.min_width - frmt.max_width - minus : frmt.min_width - count_base(d, 10) - minus);
+			bytes = repeat_char(' ', (frmt.max > count_base(d, 10) - minus) ? frmt.min - frmt.max - minus : frmt.min - count_base(d, 10) - minus);
 		else
-			bytes = repeat_char((frmt.flag == '0') ? '0' : ' ', frmt.min_width - count_base(d, 10) - minus);
-		if ((minus && frmt.flag != '0') || frmt.prec)
+			bytes = repeat_char((frmt.flag == '0') ? '0' : ' ', frmt.min - count_base(d, 10) - minus);
+		if ((minus && frmt.flag != '0') || (frmt.prec && minus))
 			ft_putchar('-');
-		bytes += (frmt.prec) ? repeat_char('0', frmt.max_width - count_base(d, 10)) : 0;
-		print_base(d, 10, count_base(d, 10), 0);
+		bytes += (frmt.prec) ? repeat_char('0', frmt.max - count_base(d, 10)) : 0;
+		ft_putnbr(d);
 		return (count_base(d, 10) + minus + bytes);
 	}
 	else if (frmt.flag == '+')
 	{
-		bytes = repeat_char(' ', (frmt.max_width > count_base(d, 10) - 1) ? frmt.min_width - frmt.max_width - 1 : frmt.min_width - count_base(d, 10) - 1);
+		bytes = repeat_char(' ', (frmt.max > count_base(d, 10) - 1) ? frmt.min - frmt.max - 1 : frmt.min - count_base(d, 10) - 1);
 		if (minus)
 			ft_putchar('-');
 		else
 			ft_putchar('+');
-		bytes += repeat_char('0', frmt.max_width - count_base(d, 10));
-		print_base(d, 10, count_base(d, 10), 0);
+		bytes += repeat_char('0', frmt.max - count_base(d, 10));
+		ft_putnbr(d);
 		return (count_base(d, 10) + bytes + 1);
 	}
 	else
-		return (print_base(d, 10, count_base(d, 10), 0) + count_base(d, 10));
+	{
+		ft_putnbr(d);
+		return (count_base(d, 10));
+	}
 }
 
 int		print_uox(t_frmt frmt, va_list ap)
@@ -212,17 +170,36 @@ int		print_uox(t_frmt frmt, va_list ap)
 	unsigned int	u;
 	int				base;
 
+	bytes = 0;
 	u = va_arg(ap, int);
 	if (frmt.modifier == 'u')
 		base = 10;
 	else
-		base = (frmt.modifier == 'o') ? 8 : 16; 
-	// if (frmt.flag == '-')
-	// {
-	// 	bytes = repeat_char('0', (count_unsign_base(u, base) < frmt.max_width) ? frmt.max_width - count_unsign_base(u, base) : 0);
-	// 	return (bytes + count_unsign_base(u, base) + print_base(u, base, ))
-	// }
-	
+		base = (frmt.modifier == 'o') ? 8 : 16; 6
+	if (frmt.flag == '-')
+	{
+		bytes += repeat_char('0', (count_unsign_base(u, base) < frmt.max) ? frmt.max - count_unsign_base(u, base) : 0);
+		bytes += print_unsign_base(u, base, 0, (frmt.modifier == 'X' ? 1 : 0));
+		return (bytes + repeat_char(' ', (bytes < frmt.min ? frmt.min - bytes : 0)));
+	}
+	else if (frmt.flag)
+	{
+		if (frmt.prec && frmt.max > count_unsign_base(u, base))
+		{
+			bytes += repeat_char((frmt.flag == '0' ? '0' : ' '), frmt.min - frmt.max);
+			bytes += repeat_char('0', frmt.max - count_unsign_base(u, base));
+		}
+		else if (frmt.min > count_unsign_base(u, base))
+			bytes += repeat_char((frmt.flag == '0' ? '0' : ' '), frmt.min - count_unsign_base(u, base));
+		return (bytes +  print_unsign_base(u, base, 0, (frmt.modifier == 'X' ? 1 : 0)));
+	}
+	else if (!frmt.flag && frmt.prec)
+	{
+		bytes += repeat_char('0', frmt.max - count_unsign_base(u, base));
+		return (bytes +  print_unsign_base(u, base, 0, (frmt.modifier == 'X' ? 1 : 0)));
+	}
+	else
+		return (print_unsign_base(u, base, 0, (frmt.modifier == 'X' ? 1 : 0)));
 }
 
 int		print(t_frmt frmt, va_list ap)
