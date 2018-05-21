@@ -27,17 +27,24 @@ typedef struct	s_frmt
 }				t_frmt;
 
 int		ft_printf(char *str, ...);
-int		print(t_frmt frmt, va_list ap);
-int		print_s(t_frmt frmt, va_list ap);
 t_frmt	check(char *str, int *i);
-int		check_conv1(char *str, int i, va_list ap);
-int		check_conv2(char *str, int i, va_list ap);
-int		check_conv3(char *str, int i, va_list ap);
-int		check_flag(char *str, int *i);
-int		*check_prec(char *str, int i);
-int		print_lu(unsigned long int n, int bytes);
+int		print(t_frmt frmt, va_list ap);
+
 int		repeat_char(char c, int n);
 int		count_base(long int n, int base);
-int		print_base(long int n, int base, int bytes, int upper);
+int		count_z_base(size_t n, int base);
+int		count_u_base(unsigned int n, int base);
+int		count_ul_base(long unsigned int n, int base);
+int		print_z_base(size_t n, int base, int bytes, int upper);
+int		print_u_base(unsigned int n, int base, int bytes, int upper);
+int		print_ul_base(unsigned long int n, int base, int bytes, int upper);
+
+int		print_s(t_frmt frmt, va_list ap);
+int		print_d(t_frmt frmt, va_list ap);
+int		print_p(t_frmt frmt, va_list ap);
+int		print_long_d(t_frmt frmt, va_list ap);
+int		print_uox(t_frmt frmt, va_list ap);
+int		print_zuox(t_frmt frmt, va_list ap);
+int		print_long_uo(t_frmt frmt, va_list ap);
 
 #endif

@@ -1,23 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putstr.c                                        :+:      :+:    :+:   */
+/*   ft_strnstr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: msakovyc <msakovyc@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/03/29 18:55:29 by msakovyc          #+#    #+#             */
-/*   Updated: 2018/03/29 18:57:42 by msakovyc         ###   ########.fr       */
+/*   Created: 2018/03/22 16:34:46 by msakovyc          #+#    #+#             */
+/*   Updated: 2018/03/27 17:31:31 by msakovyc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int		ft_putstr(char const *s)
+char	*ft_strnstr(const char *haystack, char *needle, size_t len)
 {
-	int		i;
+	size_t		i;
 
-	i = 0;
-	while (s && s[i])
-		ft_putchar(s[i++]);
-	return (i);
+	i = ft_strlen(needle);
+	if (!*needle)
+		return ((char *)haystack);
+	while (*haystack && len > 0)
+	{
+		if (i > len)
+		{
+			return (0);
+		}
+		else
+		{
+			if (!ft_strncmp(haystack, needle, i))
+				return ((char *)haystack);
+		}
+		len--;
+		haystack++;
+	}
+	return (0);
 }

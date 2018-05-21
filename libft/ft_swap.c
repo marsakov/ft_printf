@@ -1,23 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putstr.c                                        :+:      :+:    :+:   */
+/*   ft_swap.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: msakovyc <msakovyc@student.unit.ua>        +#+  +:+       +#+        */
+/*   By: msakovyc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/03/29 18:55:29 by msakovyc          #+#    #+#             */
-/*   Updated: 2018/03/29 18:57:42 by msakovyc         ###   ########.fr       */
+/*   Created: 2018/04/03 15:13:06 by msakovyc          #+#    #+#             */
+/*   Updated: 2018/04/03 15:13:10 by msakovyc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-
-int		ft_putstr(char const *s)
+void	ft_swap(int *a, int *b)
 {
-	int		i;
+	int temp;
 
-	i = 0;
-	while (s && s[i])
-		ft_putchar(s[i++]);
-	return (i);
+	temp = *a;
+	*a = *b;
+	*b = temp;
 }

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-int		size_bin(int value)
+static int		size_bin(int value)
 {
 	int size;
 
@@ -23,7 +23,7 @@ int		size_bin(int value)
 	return (size);
 }
 
-int		fmask1(unsigned int v)
+static int		fmask1(unsigned int v)
 {
 	unsigned char	o2;
 	unsigned char	o1;
@@ -41,7 +41,7 @@ int		fmask1(unsigned int v)
 	return (2);
 }
 
-int		fmask2(unsigned int v)
+static int		fmask2(unsigned int v)
 {
 	unsigned char	o3;
 	unsigned char	o2;
@@ -62,7 +62,7 @@ int		fmask2(unsigned int v)
 	return (3);
 }
 
-int		fmask3(unsigned int v)
+static int		fmask3(unsigned int v)
 {
 	unsigned char	o4; // Восстановление первых 6 11110xxx 10xxxxxx 10xxxxxx 10(xxxxxx)
 	unsigned char	o3; // Восстановление вторых 6 бит 11110xxx 10xxxxxx 10(xxxxxx) 10xxxxxx
@@ -87,10 +87,11 @@ int		fmask3(unsigned int v)
 	return (4);
 }
 
-int		print_unicode(wchar_t value)
+int			print_unicode(wchar_t value)
 {
 	int				size;
 	int				bytes;
+	wchar_t			value;
 	unsigned char	octet;
 
 	size = size_bin((unsigned int)value);

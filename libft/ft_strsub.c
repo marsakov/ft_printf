@@ -1,23 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putstr.c                                        :+:      :+:    :+:   */
+/*   ft_strsub.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: msakovyc <msakovyc@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/03/29 18:55:29 by msakovyc          #+#    #+#             */
-/*   Updated: 2018/03/29 18:57:42 by msakovyc         ###   ########.fr       */
+/*   Created: 2018/03/27 13:42:52 by msakovyc          #+#    #+#             */
+/*   Updated: 2018/03/27 17:23:08 by msakovyc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int		ft_putstr(char const *s)
+char	*ft_strsub(char const *s, unsigned int start, size_t len)
 {
+	char	*subs;
 	int		i;
 
 	i = 0;
-	while (s && s[i])
-		ft_putchar(s[i++]);
-	return (i);
+	if (!s || !*s)
+		return (0);
+	subs = (char *)malloc(sizeof(char) * (len + 1));
+	if (!subs)
+		return (0);
+	while (len)
+	{
+		*(subs + i++) = *(s + start++);
+		len--;
+	}
+	*(subs + i) = '\0';
+	return (subs);
 }

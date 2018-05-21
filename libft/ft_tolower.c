@@ -1,23 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putstr.c                                        :+:      :+:    :+:   */
+/*   ft_tolower.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: msakovyc <msakovyc@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/03/29 18:55:29 by msakovyc          #+#    #+#             */
-/*   Updated: 2018/03/29 18:57:42 by msakovyc         ###   ########.fr       */
+/*   Created: 2018/03/22 18:32:29 by msakovyc          #+#    #+#             */
+/*   Updated: 2018/03/27 15:38:10 by msakovyc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-
-int		ft_putstr(char const *s)
+int		ft_tolower(int c)
 {
-	int		i;
-
-	i = 0;
-	while (s && s[i])
-		ft_putchar(s[i++]);
-	return (i);
+	if (c >= 'A' && c <= 'Z')
+		return (c + 32);
+	else
+		return (c);
 }

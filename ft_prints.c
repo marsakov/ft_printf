@@ -12,15 +12,6 @@
 
 #include "ft_printf.h"
 
-int		print_lu(unsigned long int n, int bytes)
-{
-	if (n >= 10)
-		bytes = print_lu(n / 10, bytes);
-	ft_putchar(n % 10 + '0');
-	bytes++;
-	return (bytes);
-}
-
 int		repeat_char(char c, int n)
 {
 	int i;
@@ -33,7 +24,35 @@ int		repeat_char(char c, int n)
 	return (i - 1);
 }
 
-int		count_unsign_base(long int n, int base)
+int		count_ul_base(long unsigned int n, int base)
+{
+	int bytes;
+
+	bytes = 0;
+	while (n >= base)
+	{
+		n /= base;
+		bytes++;
+	}
+	bytes++;
+	return (bytes);
+}
+
+int		count_u_base(unsigned int n, int base)
+{
+	int bytes;
+
+	bytes = 0;
+	while (n >= base)
+	{
+		n /= base;
+		bytes++;
+	}
+	bytes++;
+	return (bytes);
+}
+
+int		count_z_base(size_t n, int base)
 {
 	int bytes;
 
@@ -65,43 +84,54 @@ int		count_base(long int n, int base)
 	return (bytes);
 }
 
-int		print_unsign_base(unsigned int n, int base, int bytes, int upper)
+int		print_z_base(size_t n, int base, int bytes, int upper)
 {
 	if (n >= base)
-		bytes = print_base(n / base, base, bytes, upper);
-	if (bytes == 0)
-		return (0);
+		bytes = print_z_base(n / base, base, bytes, upper);
 	if (n % base > 9)
+	{
 		if (upper)
 			ft_putchar(n % base + 'A' - 10);
 		else
 			ft_putchar(n % base + 'a' - 10);
+	}
 	else
 		ft_putchar(n % base + '0');
 	bytes++;
 	return (bytes);
 }
 
-int		print_base(long int n, int base, int bytes, int upper)
+int		print_u_base(unsigned int n, int base, int bytes, int upper)
 {
-	if (n == -2147483648 && base == 10)
-	{
-		ft_putstr("-2147483648");
-		return (11);
-	}
-	if (n < 0)
-		n *= -1;
 	if (n >= base)
-		bytes = print_base(n / base, base, bytes, upper);
-	if (bytes == 0)
-		return (0);
+		bytes = print_u_base(n / base, base, bytes, upper);
 	if (n % base > 9)
+	{
 		if (upper)
 			ft_putchar(n % base + 'A' - 10);
 		else
 			ft_putchar(n % base + 'a' - 10);
+	}
 	else
 		ft_putchar(n % base + '0');
-	bytes--;
+	bytes++;
 	return (bytes);
 }
+
+int		print_ul_base(unsigned long int n, int base, int bytes, int upper)
+{
+	if (n >= base)
+		bytes = print_ul_base(n / base, base, bytes, upper);
+	if (n % base > 9)
+	{
+		if (upper)
+			ft_putchar(n % base + 'A' - 10);
+		else
+			ft_putchar(n % base + 'a' - 10);
+	}
+	else
+		ft_putchar(n % base + '0');
+	bytes++;
+	return (bytes);
+}
+
