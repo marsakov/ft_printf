@@ -138,18 +138,18 @@ int		ft_printf(char *str, ...)
 	return (result);
 }
 
-int main()
-{
-	// int bytes = ft_printf("%c\n", "ϗ");
-	setlocale(P_ALL, "");
-	// int bytesp = printf("%.3ls\n", L"aa");
+// int main()
+// {
+// 	// int bytes = ft_printf("%c\n", "ϗ");
+// 	setlocale(P_ALL, "");
+// 	// int bytesp = printf("%.3ls\n", L"aa");
 
-	int p = 9999;
+// 	int p = 9999;
 
-	//int ft = 0;
+// 	//int ft = 0;
 
-	int ft = ft_printf("  my : {%.3S}\n", L"ŋƔȮ");
-	int orig = printf("orig : {%.3S}\n", L"ŋƔȮ");
-	printf("%d || %d\n", ft, orig);
-	return 0;
-}
+// 	int ft = ft_printf("  my : {%.3S}\n", L"ŋƔȮ");
+// 	int orig = printf("orig : {%.3S}\n", L"ŋƔȮ");
+// 	printf("%d || %d\n", ft, orig);
+// 	return 0;
+// }
