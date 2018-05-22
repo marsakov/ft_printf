@@ -71,7 +71,7 @@ int		print(t_frmt frmt, va_list ap)
 	}
 	else if (frmt.modifier == 'u' || frmt.modifier == 'o' || frmt.modifier == 'x' || frmt.modifier == 'X')
 	{
-		if (frmt.spec == 'l');
+		if (frmt.spec == 'l')
 			return (print_long_uo(frmt, ap));
 		else if (frmt.spec == 'z')
 			return (print_zuox(frmt, ap));
@@ -85,10 +85,23 @@ int		print(t_frmt frmt, va_list ap)
 		return (print_long_uo(frmt, ap));
 	else if (frmt.modifier == 'p')
 	 	return (print_p(frmt, ap));
-	// else if (frmt.modifier == 'C')
-	// 	return (print_unicode(frmt, ap));
-	// else if (frmt.modifier == 'S')
-	// 	return (print_unicode_s(frmt, ap));
+	else if (frmt.modifier == 'C')
+	{
+		if (MB_CUR_MAX == 1)
+		{
+			c = va_arg(ap, int);
+			return (ft_putchar(c));
+		}
+	 	return (print_unicode_c(frmt, ap));
+	}
+	else if (frmt.modifier == 'S')
+	{
+		if (MB_CUR_MAX == 1)
+			return (print_s(frmt, ap));
+	 	return (print_unicode_s(frmt, ap));
+	}
+	else
+		return (ft_putchar('%'));
 	return (0);
 }
 
@@ -128,15 +141,15 @@ int		ft_printf(char *str, ...)
 int main()
 {
 	// int bytes = ft_printf("%c\n", "ϗ");
-	// setlocale(P_ALL, "");
+	setlocale(P_ALL, "");
 	// int bytesp = printf("%.3ls\n", L"aa");
 
 	int p = 9999;
 
 	//int ft = 0;
 
-	int ft = ft_printf("  my : {%p}\n", &p);
-	int orig = printf("orig : {%p}\n", &p);
+	int ft = ft_printf("  my : {%.3S}\n", L"ŋƔȮ");
+	int orig = printf("orig : {%.3S}\n", L"ŋƔȮ");
 	printf("%d || %d\n", ft, orig);
 	return 0;
 }

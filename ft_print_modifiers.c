@@ -45,6 +45,60 @@
 // 	}
 // }
 
+int		putstr_u(wchar_t *s)
+{
+	int		i;
+	int		bytes;
+
+	i = 0;
+	bytes = 0;
+	while (s && s[i])
+		bytes += print_unicode(s[i++]);
+	return (bytes);
+}
+
+int		putnstr_u(wchar_t *s, int n)
+{
+	int		i;
+	int		bytes;
+
+	i = 0;
+	bytes = 0;
+	while (s && s[i] && bytes < n)
+		bytes += print_unicode(s[i++]);
+	return (bytes);
+}
+
+int		print_unicode_c(t_frmt frmt, va_list ap)
+{
+	wchar_t c;
+
+	c = va_arg(ap, wchar_t);
+	return (print_unicode(c));
+}
+
+int		print_unicode_s(t_frmt frmt, va_list ap)
+{
+	wchar_t	*s;
+	int		bytes;
+
+	s = va_arg(ap, wchar_t*);
+	if (frmt.flag == '-')
+	{
+		bytes = (frmt.prec && frmt.max <= ft_strlen((char*)s)) ? putnstr_u(s, frmt.max) : putstr_u(s);
+		return (bytes + repeat_char(' ', frmt.min - bytes));
+	}
+	else if (frmt.flag == '0' || frmt.flag == '+' || frmt.flag == '#')
+	{
+		bytes = (frmt.prec && frmt.max <= ft_strlen((char*)s)) ? frmt.max : ft_strlen((char*)s);
+		return (repeat_char((frmt.flag == '0') ? '0' : ' ', frmt.min - bytes) + putnstr_u(s, bytes));
+	}
+	else if (frmt.prec && frmt.max <= ft_strlen((char*)s))
+		return (putnstr_u(s, frmt.max));
+	else
+		return (putstr_u(s));
+}
+
 int		print_s(t_frmt frmt, va_list ap)
 {
 	char	*s;
@@ -179,8 +233,6 @@ int		print_zd(t_frmt frmt, va_list ap)
 
 	d = va_arg(ap, size_t);
 	minus = 0;
-	if (d < 0)
-		minus = 1;
 	if (frmt.flag == '-')
 	{
 		if (minus)

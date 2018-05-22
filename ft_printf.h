@@ -14,6 +14,7 @@
 
 # include "libft/includes/libft.h"
 # include <stdio.h>
+# include <unistd.h>
 # include <stdarg.h>
 
 typedef struct	s_frmt
@@ -39,12 +40,20 @@ int		print_z_base(size_t n, int base, int bytes, int upper);
 int		print_u_base(unsigned int n, int base, int bytes, int upper);
 int		print_ul_base(unsigned long int n, int base, int bytes, int upper);
 
+int		putstr_u(wchar_t *s);
+int		putnstr_u(wchar_t *s, int n);
+int		print_unicode(wchar_t value);
+int		print_unicode_s(t_frmt frmt, va_list ap);
+int		print_unicode_c(t_frmt frmt, va_list ap);
 int		print_s(t_frmt frmt, va_list ap);
 int		print_d(t_frmt frmt, va_list ap);
 int		print_p(t_frmt frmt, va_list ap);
+int		print_zd(t_frmt frmt, va_list ap);
+int		print_jd(t_frmt frmt, va_list ap);
 int		print_long_d(t_frmt frmt, va_list ap);
 int		print_uox(t_frmt frmt, va_list ap);
 int		print_zuox(t_frmt frmt, va_list ap);
+int		print_juox(t_frmt frmt, va_list ap);
 int		print_long_uo(t_frmt frmt, va_list ap);
 
 #endif
