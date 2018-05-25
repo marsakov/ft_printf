@@ -94,7 +94,7 @@ int		print_unicode_s(t_frmt frmt, va_list ap)
 		return (repeat_char((frmt.flag == '0') ? '0' : ' ', frmt.min - bytes) + putnstr_u(s, bytes));
 	}
 	else if (frmt.prec && frmt.max <= ft_strlen((char*)s))
-		return (putstr_u(s, frmt.max)); 
+		return (putnstr_u(s, frmt.max)); 
 	else
 		return (putstr_u(s));
 }
