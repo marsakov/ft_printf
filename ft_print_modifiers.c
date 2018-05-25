@@ -85,16 +85,16 @@ int		print_unicode_s(t_frmt frmt, va_list ap)
 	s = va_arg(ap, wchar_t*);
 	if (frmt.flag == '-')
 	{
-		bytes = (frmt.prec && frmt.max <= ft_strlen((char*)s)) ? putnstr_u(s, frmt.max) : putstr_u(s);
+		bytes = putstr_u(s);//(frmt.prec && frmt.max <= ft_strlen((char*)s)) ? putnstr_u(s, frmt.max) : putstr_u(s);
 		return (bytes + repeat_char(' ', frmt.min - bytes));
 	}
 	else if (frmt.flag == '0' || frmt.flag == '+' || frmt.flag == '#')
 	{
 		bytes = (frmt.prec && frmt.max <= ft_strlen((char*)s)) ? frmt.max : ft_strlen((char*)s);
-		return (repeat_char((frmt.flag == '0') ? '0' : ' ', frmt.min - bytes) + putnstr_u(s, bytes));
+		return (repeat_char((frmt.flag == '0') ? '0' : ' ', frmt.min - bytes) + putnstr_u(s, bytes)); // PUTNSTR
 	}
 	else if (frmt.prec && frmt.max <= ft_strlen((char*)s))
-		return (putnstr_u(s, frmt.max));
+		return (putnstr_u(s, frmt.max)); //      PUTNSTR
 	else
 		return (putstr_u(s));
 }
