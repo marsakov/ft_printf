@@ -110,7 +110,7 @@ int		print_s(t_frmt frmt, va_list ap)
 		bytes = (frmt.prec && frmt.max <= ft_strlen(s)) ? ft_putnstr(s, frmt.max) : ft_putstr(s);
 		return (bytes + repeat_char(' ', frmt.min - bytes));
 	}
-	else if (frmt.flag && frmt.flag != '-')
+	else if (frmt.flag == '+' && frmt.flag == '0' && frmt.flag == '#' && frmt.flag == ' ')
 	{
 		bytes = (frmt.prec && frmt.max <= ft_strlen(s)) ? frmt.max : ft_strlen(s);
 		return (repeat_char((frmt.flag == '0') ? '0' : ' ', frmt.min - bytes) + ft_putnstr(s, bytes));
