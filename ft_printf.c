@@ -26,8 +26,8 @@ t_frmt	check(char *str, int *i)
 	if ((s = ft_strchr("#0-+ ", str[(*i)])) != NULL)
 	{
 		frmt.flag = *s;
-		frmt.min = ft_atoi(str + *i + 1);
-		*i += count_base(frmt.min, 10) + 1;
+		if (!(frmt.min = ft_atoi(str + *i + 1)) == 0);
+			*i += count_base(frmt.min, 10) + 1;
 	}
 	if (str[(*i)] == '.')
 	{
@@ -137,19 +137,3 @@ int		ft_printf(char *str, ...)
 	va_end(ap);
 	return (result);
 }
-
-// int main()
-// {
-// 	// int bytes = ft_printf("%c\n", "ϗ");
-// 	setlocale(P_ALL, "");
-// 	// int bytesp = printf("%.3ls\n", L"aa");
-
-// 	int p = 9999;
-
-// 	//int ft = 0;
-
-// 	int ft = ft_printf("  my : {%.3S}\n", L"ŋƔȮ");
-// 	int orig = printf("orig : {%.3S}\n", L"ŋƔȮ");
-// 	printf("%d || %d\n", ft, orig);
-// 	return 0;
-// }
