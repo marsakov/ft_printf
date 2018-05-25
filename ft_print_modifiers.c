@@ -91,10 +91,10 @@ int		print_unicode_s(t_frmt frmt, va_list ap)
 	else if (frmt.flag == '0' || frmt.flag == '+' || frmt.flag == '#')
 	{
 		bytes = (frmt.prec && frmt.max <= ft_strlen((char*)s)) ? frmt.max : ft_strlen((char*)s);
-		return (repeat_char((frmt.flag == '0') ? '0' : ' ', frmt.min - bytes) + putstr_u(s, bytes)); // PUTNSTR
+		return (repeat_char((frmt.flag == '0') ? '0' : ' ', frmt.min - bytes) + putstr_u(s, bytes));
 	}
 	else if (frmt.prec && frmt.max <= ft_strlen((char*)s))
-		return (putstr_u(s, frmt.max)); //      PUTNSTR
+		return (putstr_u(s, frmt.max)); 
 	else
 		return (putstr_u(s));
 }
