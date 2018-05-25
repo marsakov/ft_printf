@@ -105,6 +105,8 @@ int		print_s(t_frmt frmt, va_list ap)
 	int		bytes;
 
 	s = va_arg(ap, char*);
+	if (!s)
+		s = "null";
 	if (frmt.flag == '-')
 	{
 		bytes = (frmt.prec && frmt.max <= ft_strlen(s)) ? ft_putnstr(s, frmt.max) : ft_putstr(s);
