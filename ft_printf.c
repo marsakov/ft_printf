@@ -23,6 +23,11 @@ t_frmt	check(char *str, int *i)
 	frmt.spec = 0;
 	frmt.flag = 0;
 	frmt.prec = 0;
+	if (ft_isdigit(str[(*i)]))
+	{
+		frmt.min = ft_atoi(str + *i);
+		*i += count_base(frmt.min, 10);
+	}
 	if ((s = ft_strchr("#0-+ ", str[(*i)])) != NULL)
 	{
 		frmt.flag = *s;
@@ -87,8 +92,8 @@ int		print(t_frmt frmt, va_list ap)
 		else if (frmt.spec == 'j')
 			d = va_arg(ap, uintmax_t);
 		else
-			d = va_arg(ap, int);
-		return (print_d(frmt, d));
+			d = va_arg(ap, unsigned int);
+		return (print_uox(frmt, d));
 	}
 	else if (frmt.modifier == 'D')
 	{
@@ -117,8 +122,11 @@ int		print(t_frmt frmt, va_list ap)
 			return (print_s(frmt, ap));
 		return (print_unicode_s(frmt, ap));
 	}
-	else
-		return (ft_putchar('%'));
+	else if (frmt.modifier == '%')
+		if (frmt.flag == '-')
+			return (ft_putchar('%') + repeat_char(' ', frmt.min - 1));
+		else
+			return (repeat_char(' ', frmt.min - 1) + ft_putchar('%'));
 	return (0);
 }
 
