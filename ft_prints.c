@@ -24,7 +24,7 @@ int		repeat_char(char c, int n)
 	return (i - 1);
 }
 
-int		count_ul_base(long unsigned int n, int base)
+int		count_ubase(uintmax_t n, int base)
 {
 	int bytes;
 
@@ -38,41 +38,13 @@ int		count_ul_base(long unsigned int n, int base)
 	return (bytes);
 }
 
-int		count_u_base(unsigned int n, int base)
-{
-	int bytes;
-
-	bytes = 0;
-	while (n >= base)
-	{
-		n /= base;
-		bytes++;
-	}
-	bytes++;
-	return (bytes);
-}
-
-int		count_z_base(size_t n, int base)
-{
-	int bytes;
-
-	bytes = 0;
-	while (n >= base)
-	{
-		n /= base;
-		bytes++;
-	}
-	bytes++;
-	return (bytes);
-}
-
-int		count_base(long int n, int base)
+int		count_base(intmax_t n, int base)
 {
 	int bytes;
 
 	bytes = 0;
 	if (n == -2147483648 && base == 10)
-		return (11);
+		return (10);
 	if (n < 0)
 		n *= -1;
 	while (n >= base)
@@ -84,10 +56,14 @@ int		count_base(long int n, int base)
 	return (bytes);
 }
 
-int		print_z_base(size_t n, int base, int bytes, int upper)
+int		print_base(intmax_t n, int base, int bytes, int upper)
 {
+	if (n == -2147483648 && base == 10)
+		return (ft_putstr("2147483648"));
+	if (n < 0)
+		n *= -1;
 	if (n >= base)
-		bytes = print_z_base(n / base, base, bytes, upper);
+		bytes = print_base(n / base, base, bytes, upper);
 	if (n % base > 9)
 	{
 		if (upper)
@@ -101,10 +77,10 @@ int		print_z_base(size_t n, int base, int bytes, int upper)
 	return (bytes);
 }
 
-int		print_u_base(unsigned int n, int base, int bytes, int upper)
+int		print_ubase(uintmax_t n, int base, int bytes, int upper)
 {
 	if (n >= base)
-		bytes = print_u_base(n / base, base, bytes, upper);
+		bytes = print_ubase(n / base, base, bytes, upper);
 	if (n % base > 9)
 	{
 		if (upper)
@@ -117,21 +93,3 @@ int		print_u_base(unsigned int n, int base, int bytes, int upper)
 	bytes++;
 	return (bytes);
 }
-
-int		print_ul_base(unsigned long int n, int base, int bytes, int upper)
-{
-	if (n >= base)
-		bytes = print_ul_base(n / base, base, bytes, upper);
-	if (n % base > 9)
-	{
-		if (upper)
-			ft_putchar(n % base + 'A' - 10);
-		else
-			ft_putchar(n % base + 'a' - 10);
-	}
-	else
-		ft_putchar(n % base + '0');
-	bytes++;
-	return (bytes);
-}
-

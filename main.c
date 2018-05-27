@@ -9,9 +9,8 @@ int main()
 	int p = 9999;
 
 	//int ft = 0;
-
-	int ft = ft_printf("  my : {%05d}\n", 0000042);
-	int orig = printf("orig : {%05d}\n", 0000042);
+	int ft = ft_printf("  my : {%0.20zd}\n", -2147483647 - 1);
+	int orig = printf("orig : {%0.20zd}\n", -2147483647 - 1);
 	printf("%d || %d\n", ft, orig);
 	return 0;
 }
