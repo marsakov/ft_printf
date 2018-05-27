@@ -51,9 +51,7 @@ t_frmt	check(char *str, int *i)
 
 int		print(t_frmt frmt, va_list ap)
 {
-	int			c;
-	intmax_t	d;
-	uintmax_t	u;
+	int c;
 
 	if (frmt.modifier == 'c')
 	{
@@ -64,44 +62,30 @@ int		print(t_frmt frmt, va_list ap)
 		return (print_s(frmt, ap));
 	else if (frmt.modifier == 'd' || frmt.modifier == 'i')
 	{
-		if (frmt.spec == 'h')
-			d = (short)va_arg(ap, int);
-		else if (frmt.spec == 'l')
-			d = va_arg(ap, long int);
+		if (frmt.spec == 'l')
+			return (print_long_d(frmt, ap));
 		else if (frmt.spec == 'z')
-			d = va_arg(ap, size_t);
+			return (print_zd(frmt, ap));
 		else if (frmt.spec == 'j')
-			d = va_arg(ap, intmax_t);
-		else
-			d = va_arg(ap, int);
-		return (print_d(frmt, d));
+			return (print_jd(frmt, ap));
+		return (print_d(frmt, ap));
 	}
 	else if (frmt.modifier == 'u' || frmt.modifier == 'o' || frmt.modifier == 'x' || frmt.modifier == 'X')
 	{
-		if (frmt.spec == 'h')
-			d = (short)va_arg(ap, unsigned int);
-		else if (frmt.spec == 'l')
-			d = va_arg(ap, unsigned long int);
+		if (frmt.spec == 'l')
+			return (print_long_uo(frmt, ap));
 		else if (frmt.spec == 'z')
-			d = va_arg(ap, size_t);
+			return (print_zuox(frmt, ap));
 		else if (frmt.spec == 'j')
-			d = va_arg(ap, uintmax_t);
-		else
-			d = va_arg(ap, int);
-		return (print_d(frmt, d));
+			return (print_juox(frmt, ap));
+		return (print_uox(frmt, ap));
 	}
 	else if (frmt.modifier == 'D')
-	{
-		d = va_arg(ap, long int);
-		return (print_d(frmt, d));
-	}
+		return (print_long_d(frmt, ap));
 	else if (frmt.modifier == 'U' || frmt.modifier == 'O')
-	{
-		d = va_arg(ap, unsigned long int);
-		return (print_uox(frmt, d));
-	}
+		return (print_long_uo(frmt, ap));
 	else if (frmt.modifier == 'p')
-		return (print_p(frmt, ap));
+	 	return (print_p(frmt, ap));
 	else if (frmt.modifier == 'C')
 	{
 		if (MB_CUR_MAX == 1)
@@ -109,13 +93,13 @@ int		print(t_frmt frmt, va_list ap)
 			c = va_arg(ap, int);
 			return (ft_putchar(c));
 		}
-		return (print_unicode_c(frmt, ap));
+	 	return (print_unicode_c(frmt, ap));
 	}
 	else if (frmt.modifier == 'S')
 	{
 		if (MB_CUR_MAX == 1)
 			return (print_s(frmt, ap));
-		return (print_unicode_s(frmt, ap));
+	 	return (print_unicode_s(frmt, ap));
 	}
 	else
 		return (ft_putchar('%'));
