@@ -12,7 +12,7 @@
 
 #include "ft_printf.h"
 
-t_frmt	check(char *str, int *i)
+t_frmt	check(char *str, int *i, va_list ap)
 {
 	t_frmt		frmt;
 	char		*s;
@@ -29,13 +29,25 @@ t_frmt	check(char *str, int *i)
 	{
 		frmt.flag = *s;
 		*i += 1;
-		frmt.min = ft_atoi_ptr(str, i);
+        if (str[(*i)] == '*')
+        {
+            frmt.min = va_arg(ap, int);
+            (*i)++;
+        }
+        else
+            frmt.min = ft_atoi_ptr(str, i);
 	}
 	if (str[(*i)] == '.')
 	{
 		frmt.prec = 1;
 		*i += 1;
-		frmt.max = ft_atoi_ptr(str, i);
+        if (str[(*i)] == '*')
+        {
+            frmt.max = va_arg(ap, int);
+            (*i)++;
+        }
+        else
+            frmt.max = ft_atoi_ptr(str, i);
 	}
 	if ((s = ft_strchr("hljz", str[(*i)])) != NULL)
 	{
@@ -153,7 +165,7 @@ int		ft_printf(char *str, ...)
 		if (str[i] == '%')
 		{
 			i++;
-			frmt = check(str, &i);
+			frmt = check(str, &i, ap);
 			result += print(frmt, ap);
 		}
 		else
