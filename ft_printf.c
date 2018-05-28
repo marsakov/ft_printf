@@ -23,7 +23,7 @@ t_frmt	check(char *str, int *i, va_list ap)
 	frmt.spec = 0;
 	frmt.flag = 0;
 	frmt.prec = 0;
-	if (ft_isdigit(str[(*i)]) && str[(*i)] != '0')
+	if ((ft_isdigit(str[(*i)]) && str[(*i)] != '0') || str[(*i)] == '*')
 	{
 		if (str[(*i)] == '*')
 		{
