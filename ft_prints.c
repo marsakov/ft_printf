@@ -43,8 +43,8 @@ int		count_base(intmax_t n, int base)
 	int bytes;
 
 	bytes = 0;
-	if (n == -2147483648 && base == 10)
-		return (10);
+	if (n == -9223372036854775808 && base == 10)
+		return (19);
 	if (n < 0)
 		n *= -1;
 	while (n >= base)
@@ -58,8 +58,8 @@ int		count_base(intmax_t n, int base)
 
 int		print_base(intmax_t n, int base, int bytes, int upper)
 {
-	if (n == -2147483648 && base == 10)
-		return (ft_putstr("2147483648"));
+	if (n == -9223372036854775808 && base == 10)
+		return (ft_putstr("9223372036854775808"));
 	if (n < 0)
 		n *= -1;
 	if (n >= base)

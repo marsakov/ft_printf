@@ -23,27 +23,29 @@ t_frmt	check(char *str, int *i)
 	frmt.spec = 0;
 	frmt.flag = 0;
 	frmt.prec = 0;
-	if (ft_isdigit(str[(*i)]))
-	{
-		frmt.min = ft_atoi(str + *i);
-		*i += count_base(frmt.min, 10);
-	}
-	if ((s = ft_strchr("#0-+ ", str[(*i)])) != NULL)
+	if (ft_isdigit(str[(*i)]) && str[(*i)] != '0')
+		frmt.min = ft_atoi_ptr(str, i);
+	while ((s = ft_strchr("#0-+ ", str[(*i)])) != NULL)
 	{
 		frmt.flag = *s;
-		if ((frmt.min = ft_atoi(str + *i + 1)) != 0)
-			*i += count_base(frmt.min, 10);
 		*i += 1;
+		frmt.min = ft_atoi_ptr(str, i);
 	}
 	if (str[(*i)] == '.')
 	{
 		frmt.prec = 1;
-		frmt.max = ft_atoi(str + *i + 1);
-		*i += count_base(frmt.max, 10) + 1;
+		*i += 1;
+		frmt.max = ft_atoi_ptr(str, i);
 	}
 	if ((s = ft_strchr("hljz", str[(*i)])) != NULL)
 	{
-		frmt.spec = *s;
+		if (str[(*i) + 1] == str[(*i)])
+		{
+			(*i)++;
+			frmt.spec = ft_toupper(*s);
+		}
+		else
+			frmt.spec = *s;
 		(*i)++;
 	}
 	if ((s = ft_strchr("sSpdDioOuUxXcC%", str[(*i)])) != NULL)
@@ -56,23 +58,23 @@ t_frmt	check(char *str, int *i)
 
 int		print(t_frmt frmt, va_list ap)
 {
-	int			c;
 	intmax_t	d;
 	uintmax_t	u;
 
 	if (frmt.modifier == 'c')
-	{
-		c = va_arg(ap, int);
-		return (ft_putchar(c));
-	}
+		return (print_c(frmt, ap));
 	else if (frmt.modifier == 's')
 		return (print_s(frmt, ap));
 	else if (frmt.modifier == 'd' || frmt.modifier == 'i')
 	{
 		if (frmt.spec == 'h')
 			d = (short)va_arg(ap, int);
+		else if (frmt.spec == 'H')
+			d = (char)va_arg(ap, int);
 		else if (frmt.spec == 'l')
 			d = va_arg(ap, long int);
+		else if (frmt.spec == 'L')
+			d = va_arg(ap, long long int);
 		else if (frmt.spec == 'z')
 			d = va_arg(ap, size_t);
 		else if (frmt.spec == 'j')
@@ -84,9 +86,13 @@ int		print(t_frmt frmt, va_list ap)
 	else if (frmt.modifier == 'u' || frmt.modifier == 'o' || frmt.modifier == 'x' || frmt.modifier == 'X')
 	{
 		if (frmt.spec == 'h')
-			d = (short)va_arg(ap, unsigned int);
+			d = (unsigned short)va_arg(ap, unsigned int);
+		else if (frmt.spec == 'H')
+			d = (unsigned char)va_arg(ap, unsigned int);
 		else if (frmt.spec == 'l')
 			d = va_arg(ap, unsigned long int);
+		else if (frmt.spec == 'L')
+			d = va_arg(ap, unsigned long long int);
 		else if (frmt.spec == 'z')
 			d = va_arg(ap, size_t);
 		else if (frmt.spec == 'j')
@@ -110,10 +116,7 @@ int		print(t_frmt frmt, va_list ap)
 	else if (frmt.modifier == 'C')
 	{
 		if (MB_CUR_MAX == 1)
-		{
-			c = va_arg(ap, int);
-			return (ft_putchar(c));
-		}
+			return print_c(frmt, ap);
 		return (print_unicode_c(frmt, ap));
 	}
 	else if (frmt.modifier == 'S')
@@ -123,10 +126,12 @@ int		print(t_frmt frmt, va_list ap)
 		return (print_unicode_s(frmt, ap));
 	}
 	else if (frmt.modifier == '%')
+	{
 		if (frmt.flag == '-')
 			return (ft_putchar('%') + repeat_char(' ', frmt.min - 1));
 		else
 			return (repeat_char(' ', frmt.min - 1) + ft_putchar('%'));
+	}
 	return (0);
 }
 

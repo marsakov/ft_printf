@@ -24,6 +24,7 @@ typedef struct		s_list
 	struct s_list	*next;
 }					t_list;
 
+int					ft_atoi_ptr(const char *str, int *i);
 int					ft_atoi(const char *str);
 void				ft_bzero(void *s, size_t n);
 int					ft_isprint(int c);
@@ -73,7 +74,6 @@ int					ft_putchar(char c);
 int					ft_putstr(char const *s);
 void				ft_putendl(char const *s);
 void				ft_putnbr(int n);
-void				ft_putlnbr(long int n);
 void				ft_putchar_fd(char c, int fd);
 void				ft_putstr_fd(char const *s, int fd);
 void				ft_putendl_fd(char const *s, int fd);

@@ -1,4 +1,5 @@
 #include "ft_printf.h"
+#include <locale.h>
 
 int main()
 {
@@ -9,8 +10,8 @@ int main()
 	int p = 9999;
 
 	//int ft = 0;
-	int ft = ft_printf("  my : {%0.20zd}\n", -2147483647 - 1);
-	int orig = printf("orig : {%0.20zd}\n", -2147483647 - 1);
+	int ft = ft_printf("  my : {%lld}\n", -9223372036854775808);
+	int orig = printf("orig : {%lld}\n", -9223372036854775808);
 	printf("%d || %d\n", ft, orig);
 	return 0;
 }
