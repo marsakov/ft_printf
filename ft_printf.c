@@ -24,30 +24,38 @@ t_frmt	check(char *str, int *i, va_list ap)
 	frmt.flag = 0;
 	frmt.prec = 0;
 	if (ft_isdigit(str[(*i)]) && str[(*i)] != '0')
-		frmt.min = ft_atoi_ptr(str, i);
+	{
+		if (str[(*i)] == '*')
+		{
+			frmt.min = va_arg(ap, int);
+			(*i)++;
+		}
+		else
+			frmt.min = ft_atoi_ptr(str, i);
+	}
 	while ((s = ft_strchr("#0-+ ", str[(*i)])) != NULL)
 	{
 		frmt.flag = *s;
 		*i += 1;
-        if (str[(*i)] == '*')
-        {
-            frmt.min = va_arg(ap, int);
-            (*i)++;
-        }
-        else
-            frmt.min = ft_atoi_ptr(str, i);
+		if (str[(*i)] == '*')
+		{
+			frmt.min = va_arg(ap, int);
+			(*i)++;
+		}
+		else
+			frmt.min = ft_atoi_ptr(str, i);
 	}
 	if (str[(*i)] == '.')
 	{
 		frmt.prec = 1;
 		*i += 1;
-        if (str[(*i)] == '*')
-        {
-            frmt.max = va_arg(ap, int);
-            (*i)++;
-        }
-        else
-            frmt.max = ft_atoi_ptr(str, i);
+		if (str[(*i)] == '*')
+		{
+			frmt.max = va_arg(ap, int);
+			(*i)++;
+		}
+		else
+			frmt.max = ft_atoi_ptr(str, i);
 	}
 	if ((s = ft_strchr("hljz", str[(*i)])) != NULL)
 	{
