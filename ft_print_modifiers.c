@@ -189,6 +189,8 @@ int		print_uox(t_frmt frmt, uintmax_t u)
 			bytes += repeat_char((frmt.flag == '0' ? '0' : ' '), frmt.min - count_ubase(u, base) - (frmt.flag == '#' && base == 16 ? 2 : 0));
 		if (frmt.flag == '#' && base == 16 && u != 0)
 			bytes += ft_putstr((frmt.modifier == 'x' ? "0x" : "0X"));
+		if (frmt.flag == '#' && base == 8 && u != 0)
+			bytes += ft_putchar('0');
 		if (frmt.prec && frmt.max > count_ubase(u, base))
 			bytes += repeat_char('0', frmt.max - count_ubase(u, base));
 		return (bytes + print_ubase(u, base, 0, (frmt.modifier == 'X' ? 1 : 0)));
