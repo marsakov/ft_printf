@@ -28,7 +28,7 @@ typedef struct	s_frmt
 }				t_frmt;
 
 int		ft_printf(char *str, ...);
-t_frmt	check(char *str, int *i);
+t_frmt	check(char *str, int *i, va_list ap);
 int		print(t_frmt frmt, va_list ap);
 
 int		repeat_char(char c, int n);
