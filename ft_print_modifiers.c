@@ -126,7 +126,7 @@ int		print_d(t_frmt frmt, intmax_t d)
 	}
 	else if (frmt.flag == '0' || frmt.flag == '#' || frmt.flag == ' ')
 	{
-		if (frmt.flag == ' ' && !minus && !frmt.min)
+		if (frmt.flag == ' ' && !minus && (!frmt.min || frmt.max > frmt.min))
 			bytes += ft_putchar(' ');
 		if (minus && frmt.flag == '0' && !frmt.prec)
 			ft_putchar('-');
