@@ -16,7 +16,7 @@ int		repeat_char(char c, int n)
 {
 	int i;
 
-	if (n < 0)
+	if (n <= 0)
 		return (0);
 	i = 0;
 	while (i++ < n)

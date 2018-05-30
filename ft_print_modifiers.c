@@ -50,15 +50,15 @@ int		print_unicode_s(t_frmt frmt, va_list ap)
 	int		bytes;
 
 	s = va_arg(ap, wchar_t*);
-	if (frmt.flag == '-')
+	if (frmt.minus)
 	{
 		bytes = (frmt.prec && frmt.max <= ft_strlen((char*)s)) ? putnstr_u(s, frmt.max) : putstr_u(s);
 		return (bytes + repeat_char(' ', frmt.min - bytes));
 	}
-	else if (frmt.flag == '0' || frmt.flag == '+' || frmt.flag == '#')
+	else if (frmt.zero || frmt.plus || frmt.sharp)
 	{
 		bytes = (frmt.prec && frmt.max <= ft_strlen((char*)s)) ? frmt.max : ft_strlen((char*)s);
-		return (repeat_char((frmt.flag == '0') ? '0' : ' ', frmt.min - bytes) + putnstr_u(s, bytes));
+		return (repeat_char((frmt.zero) ? '0' : ' ', frmt.min - bytes) + putnstr_u(s, bytes));
 	}
 	else if (frmt.prec && frmt.max <= ft_strlen((char*)s))
 		return (repeat_char(' ', frmt.min - frmt.max) + putnstr_u(s, frmt.max));
@@ -74,15 +74,15 @@ int		print_s(t_frmt frmt, va_list ap)
 	s = va_arg(ap, char*);
 	if (!s)
 		s = "(null)";
-	if (frmt.flag == '-')
+	if (frmt.minus)
 	{
 		bytes = (frmt.prec && frmt.max <= ft_strlen(s)) ? ft_putnstr(s, frmt.max) : ft_putstr(s);
 		return (bytes + repeat_char(' ', frmt.min - bytes));
 	}
-	else if (frmt.flag == '+' || frmt.flag == '0' || frmt.flag == '#' || frmt.flag == ' ')
+	else if (frmt.plus || frmt.zero || frmt.sharp || frmt.space)
 	{
 		bytes = (frmt.prec && frmt.max <= ft_strlen(s)) ? frmt.max : ft_strlen(s);
-		return (repeat_char((frmt.flag == '0') ? '0' : ' ', frmt.min - bytes) + ft_putnstr(s, bytes));
+		return (repeat_char((frmt.zero) ? '0' : ' ', frmt.min - bytes) + ft_putnstr(s, bytes));
 	}
 	else if (frmt.prec && frmt.max <= ft_strlen(s))
 		return (repeat_char(' ', frmt.min - frmt.max) + ft_putnstr(s, frmt.max));
@@ -90,15 +90,12 @@ int		print_s(t_frmt frmt, va_list ap)
 		return (repeat_char(' ', frmt.min - ft_strlen(s)) + ft_putstr(s));
 }
 
-int		print_c(t_frmt frmt, va_list ap)
+int		print_c(t_frmt frmt, int c)
 {
-	int c;
-
-	c = va_arg(ap, int);
-	if (frmt.flag == '-')
+	if (frmt.minus)
 		return (ft_putchar(c) + repeat_char(' ', frmt.min - 1));
-	else if (frmt.flag == '+' || frmt.flag == '0' || frmt.flag == '#' || frmt.flag == ' ')
-		return (repeat_char((frmt.flag == '0') ? '0' : ' ', frmt.min - 1) + ft_putchar(c));
+	else if (frmt.plus || frmt.zero || frmt.sharp || frmt.space)
+		return (repeat_char((frmt.zero) ? '0' : ' ', frmt.min - 1) + ft_putchar(c));
 	else
 		return (repeat_char(' ', frmt.min - 1) + ft_putchar(c));
 }
@@ -111,36 +108,45 @@ int		print_d(t_frmt frmt, intmax_t d)
 	minus = 0;
 	bytes = 0;
 	if (frmt.prec && !frmt.max && !d)
-			return (repeat_char((frmt.flag == '0' ? '0' : ' '), frmt.min));
+			return (repeat_char((frmt.zero ? '0' : ' '), frmt.min));
 	if (d < 0)
 		minus = 1;
-	if (frmt.flag == '-')
+	if (frmt.minus)
 	{
-		if (minus)
-			ft_putchar('-');
-		bytes = (frmt.prec && frmt.max > count_base(d, 10)) ? repeat_char('0', frmt.max - count_base(d, 10)) : 0;
+		if (minus || frmt.plus)
+			if (minus)
+				bytes += ft_putchar('-');
+			else
+				bytes += ft_putchar('+');
+		bytes += (frmt.prec && frmt.max > count_base(d, 10)) ? repeat_char('0', frmt.max - count_base(d, 10)) : 0;
 		bytes += print_base(d, 10, 0, 0);
 		if ((frmt.prec && frmt.max < frmt.min) || !frmt.prec)
-			bytes += repeat_char(' ', frmt.min - bytes - minus);
-		return (bytes + minus);
+			bytes += repeat_char(' ', frmt.min - bytes);
+		return (bytes);
 	}
-	else if (frmt.flag == '0' || frmt.flag == '#' || frmt.flag == ' ')
+	else if (frmt.zero || frmt.sharp || frmt.space)
 	{
-		if (frmt.flag == ' ' && !minus && (!frmt.min || frmt.max > frmt.min))
+		if (frmt.space && !minus && (!frmt.min || frmt.max > frmt.min) && !frmt.plus)
 			bytes += ft_putchar(' ');
-		if (minus && frmt.flag == '0' && !frmt.prec)
-			ft_putchar('-');
+		if ((frmt.plus || minus) && frmt.zero && !frmt.prec)
+            if (minus)
+                bytes += ft_putchar('-');
+            else
+                bytes += ft_putchar('+');
 		if (frmt.prec)
-			bytes += repeat_char(' ', frmt.min - minus - ((frmt.max > count_base(d, 10) - minus) ? frmt.max : count_base(d, 10)));
+			bytes += repeat_char(' ', frmt.min - (bytes ? bytes : minus) - ((frmt.max > count_base(d, 10) - (bytes ? bytes : minus)) ? frmt.max : count_base(d, 10)));
 		else
-			bytes += repeat_char((frmt.flag == '0') ? '0' : ' ', frmt.min - count_base(d, 10) - minus);
-		if ((minus && frmt.flag != '0') || (frmt.prec && minus))
-			ft_putchar('-');
+			bytes += repeat_char((frmt.zero) ? '0' : ' ', frmt.min - count_base(d, 10) - (bytes ? bytes : minus));
+		if (((frmt.plus || minus) && !frmt.zero) || (frmt.prec && minus))
+            if (minus)
+                bytes += ft_putchar('-');
+            else
+                bytes += ft_putchar('+');
 		bytes += (frmt.prec) ? repeat_char('0', frmt.max - count_base(d, 10)) : 0;
 		bytes += print_base(d, 10, 0, 0);
-		return (minus + bytes);
+		return (bytes);
 	}
-	else if (frmt.flag == '+')
+	else if (frmt.plus)
 	{
 		bytes = repeat_char(' ', frmt.min - 1 - ((frmt.max > count_base(d, 10) - 1) ? frmt.max : count_base(d, 10)));
 		bytes += ft_putchar(minus ? '-' : '+');
@@ -162,52 +168,81 @@ int		print_uox(t_frmt frmt, uintmax_t u)
 {
 	int				bytes;
 	int				base;
+    int             ox;
 
 	bytes = 0;
 	if (frmt.prec && !frmt.max && !u)
 	{
-		if (frmt.flag == '#' && frmt.modifier == 'o') 
-			;
-		else
-			return (repeat_char((frmt.flag == '0' ? '0' : ' '), frmt.min));
+		if (!(frmt.sharp && frmt.modifier == 'o'))
+			return (repeat_char((frmt.zero ? '0' : ' '), frmt.min));
 	}
 	if (frmt.modifier == 'u' || frmt.modifier == 'U')
 		base = 10;
 	else
 		base = (frmt.modifier == 'o' || frmt.modifier == 'O') ? 8 : 16;
-	if (frmt.flag == '-')
+    ox = (frmt.sharp && base == 16) ? 2 : 0;
+    if (frmt.sharp && base == 8)
+        ox = 1;
+	if (frmt.minus)
 	{
-		bytes += repeat_char('0', (count_ubase(u, base) < frmt.max) ? frmt.max - count_ubase(u, base) : 0);
+        bytes += (ox == 1) ? ft_putchar('0') : 0;
+        bytes += (ox == 2) ? ft_putstr((frmt.modifier == 'x' ? "0x" : "0X")) : 0;
+		bytes += repeat_char('0', (count_ubase(u, base) < frmt.max) ? frmt.max - count_ubase(u, base) - bytes : 0);
 		bytes += print_ubase(u, base, 0, (frmt.modifier == 'X' ? 1 : 0));
 		return (bytes + repeat_char(' ', (bytes < frmt.min ? frmt.min - bytes : 0)));
 	}
-	else if (frmt.flag)
+	else if (frmt.sharp || frmt.plus || frmt.zero || frmt.space)
 	{
-		if (frmt.prec && frmt.max > count_ubase(u, base))
-			bytes += repeat_char(' ', frmt.min - frmt.max - (frmt.flag == '#' && base == 16 ? 2 : 0));
-		if (frmt.min > count_ubase(u, base))
-			bytes += repeat_char((frmt.flag == '0' ? '0' : ' '), frmt.min - count_ubase(u, base) - (frmt.flag == '#' && base == 16 ? 2 : 0));
-		if (frmt.flag == '#' && base == 16 && u != 0)
-			bytes += ft_putstr((frmt.modifier == 'x' ? "0x" : "0X"));
-		if (frmt.flag == '#' && base == 8 && u != 0)
-			bytes += ft_putchar('0');
-		if (frmt.prec && frmt.max > count_ubase(u, base))
-			bytes += repeat_char('0', frmt.max - count_ubase(u, base));
-		return (bytes + print_ubase(u, base, 0, (frmt.modifier == 'X' ? 1 : 0)));
+        if (frmt.min <= (frmt.max ? frmt.max : count_ubase(u, base)) || frmt.zero)
+        {
+            if (ox == 2 && u != 0 && !frmt.space && !frmt.plus && (ox = 0) == 0)
+                bytes += ft_putstr((frmt.modifier == 'x' ? "0x" : "0X"));
+            if (ox == 1 && !frmt.space && !frmt.plus && (ox = 0) == 0)
+                bytes += ft_putchar('0');
+        }
+        bytes += repeat_char((frmt.zero && frmt.min > (frmt.max ? frmt.max : count_ubase(u, base))) ? '0' : ' ', frmt.min - (frmt.max ? frmt.max : count_ubase(u, base)) - (frmt.sharp && base == 16 ? 2 : 0) - (frmt.sharp && base == 8 ? 1 : 0));
+        if (ox && u != 0)
+            bytes += (ox == 2) ? ft_putstr((frmt.modifier == 'x' ? "0x" : "0X")) : ft_putchar('0');
+        if (frmt.max > count_ubase(u, base))
+            bytes += repeat_char('0', frmt.max - count_ubase(u, base));
+		return (bytes + ((!u && frmt.prec && !frmt.max) ? 0 : print_ubase(u, base, 0, (frmt.modifier == 'X' ? 1 : 0))));
 	}
-	else
-	{
-		bytes += repeat_char(' ', (frmt.max > count_ubase(u, base)) ? frmt.min - frmt.max : frmt.min - count_ubase(u, base));
-		bytes += repeat_char('0', frmt.max - count_ubase(u, base));
-		return (bytes + print_ubase(u, base, 0, (frmt.modifier == 'X' ? 1 : 0)));
-	}
+    bytes += repeat_char(' ', frmt.min - (frmt.max > count_ubase(u, base) ? frmt.max : count_ubase(u, base)) - ox);
+    if (ox && u != 0)
+        bytes += (ox == 2) ? ft_putstr((frmt.modifier == 'x' ? "0x" : "0X")) : ft_putchar('0');
+    bytes += repeat_char('0', frmt.max - count_ubase(u, base));
+    return (bytes + print_ubase(u, base, 0, (frmt.modifier == 'X' ? 1 : 0)));
 }
 
 int		print_p(t_frmt frmt, va_list ap)
 {
 	unsigned long int	u;
+    int                 bytes;
+    int                 ox;
 
+    ox = 2;
+    bytes = 0;
 	u = va_arg(ap, unsigned long int);
-	ft_putstr("0x");
-	return (2 + print_ubase(u, 16, 0, 0));
+    if (frmt.minus)
+    {
+        bytes += ft_putstr("0x");
+        bytes += repeat_char('0', (count_ubase(u, 16) < frmt.max) ? frmt.max - count_ubase(u, 16) : 0);
+        bytes += ((!u && frmt.prec && !frmt.max) ? 0 : print_ubase(u, 16, 0, 0));
+        return (bytes + repeat_char(' ', frmt.min - bytes));
+    }
+    else if (frmt.sharp || frmt.plus || frmt.zero || frmt.space)
+    {
+        if (frmt.min < (frmt.max ? frmt.max : count_ubase(u, 16)) && frmt.zero && ((ox = 0) == 0))
+            bytes += ft_putstr("0x");
+        bytes += repeat_char((frmt.zero && frmt.min < (frmt.max ? frmt.max : count_ubase(u, 16))) ? '0' : ' ', frmt.min - (frmt.max ? frmt.max : count_ubase(u, 16)) - ox);
+        if (ox)
+            bytes += ft_putstr("0x");
+        if (frmt.max > count_ubase(u, 16))
+            bytes += repeat_char('0', frmt.max - count_ubase(u, 16));
+        return (bytes + ((!u && frmt.prec && !frmt.max) ? 0 : print_ubase(u, 16, 0, 0)));
+    }
+    bytes += repeat_char(' ', frmt.min - (frmt.max > count_ubase(u, 16) ? frmt.max : count_ubase(u, 16)) - 2);
+    bytes += ft_putstr("0x");
+    bytes += repeat_char('0', frmt.max - count_ubase(u, 16));
+    return (bytes + ((!u && frmt.prec && !frmt.max) ? 0 : print_ubase(u, 16, 0, 0)));
 }

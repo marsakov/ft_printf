@@ -17,12 +17,16 @@ t_frmt	check(char *str, int *i, va_list ap)
 	t_frmt		frmt;
 	char		*s;
 
-	frmt.max = 0;
-	frmt.min = 0;
-	frmt.modifier = 0;
-	frmt.spec = 0;
-	frmt.flag = 0;
-	frmt.prec = 0;
+    frmt.max = 0;
+    frmt.min = 0;
+    frmt.modifier = 0;
+    frmt.spec = 0;
+    frmt.minus = 0;
+    frmt.plus = 0;
+    frmt.sharp = 0;
+    frmt.space = 0;
+    frmt.zero = 0;
+    frmt.prec = 0;
 	if ((ft_isdigit(str[(*i)]) && str[(*i)] != '0') || str[(*i)] == '*')
 	{
 		if (str[(*i)] == '*')
@@ -35,14 +39,23 @@ t_frmt	check(char *str, int *i, va_list ap)
 	}
 	while ((s = ft_strchr("#0-+ ", str[(*i)])) != NULL)
 	{
-		frmt.flag = *s;
+		if (*s == '#')
+			frmt.sharp = 1;
+		else if (*s == '0')
+			frmt.zero = 1;
+		else if (*s == '+')
+			frmt.plus = 1;
+        else if (*s == '-')
+            frmt.minus = 1;
+		else
+			frmt.space = 1;
 		*i += 1;
 		if (str[(*i)] == '*')
 		{
 			frmt.min = va_arg(ap, int);
 			(*i)++;
 		}
-		else
+		else if (ft_isdigit(str[(*i)]) && str[(*i)] != '0')
 			frmt.min = ft_atoi_ptr(str, i);
 	}
 	if (str[(*i)] == '.')
@@ -54,7 +67,7 @@ t_frmt	check(char *str, int *i, va_list ap)
 			frmt.max = va_arg(ap, int);
 			(*i)++;
 		}
-		else
+		else if (ft_isdigit(str[(*i)]))
 			frmt.max = ft_atoi_ptr(str, i);
 	}
 	if ((s = ft_strchr("hljz", str[(*i)])) != NULL)
@@ -73,6 +86,8 @@ t_frmt	check(char *str, int *i, va_list ap)
 		frmt.modifier = *s;
 		(*i)++;
 	}
+    if (frmt.min < 0 && (frmt.min *= -1) > 0)
+        frmt.minus = 1;
 	return (frmt);
 }
 
@@ -80,10 +95,14 @@ int		print(t_frmt frmt, va_list ap)
 {
 	intmax_t	d;
 	uintmax_t	u;
+    int         c;
 
 	if (frmt.modifier == 'c')
-		return (print_c(frmt, ap));
-	else if (frmt.modifier == 's')
+    {
+        c = va_arg(ap, int);
+        return (print_c(frmt, c));
+    }
+    else if (frmt.modifier == 's')
 		return (print_s(frmt, ap));
 	else if (frmt.modifier == 'd' || frmt.modifier == 'i')
 	{
@@ -146,13 +165,9 @@ int		print(t_frmt frmt, va_list ap)
 		return (print_unicode_s(frmt, ap));
 	}
 	else if (frmt.modifier == '%')
-	{
-		if (frmt.flag == '-')
-			return (ft_putchar('%') + repeat_char(' ', frmt.min - 1));
-		else
-			return (repeat_char(' ', frmt.min - 1) + ft_putchar('%'));
-	}
-	return (0);
+        print_c(frmt, '%');
+    else
+        return (repeat_char(' ', frmt.min - 1));
 }
 
 int		ft_printf(char *str, ...)
