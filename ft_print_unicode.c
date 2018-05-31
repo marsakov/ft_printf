@@ -103,3 +103,27 @@ int			print_unicode(wchar_t value)
 		return (fmask3((unsigned int)value));
 	return (0);
 }
+
+int			count_unicode(wchar_t *s)
+{
+	int bytes;
+	int	size;
+	int i;
+
+	i = 0;
+	bytes = 0;
+	while (s[i])
+	{
+		size = size_bin(s[i]);
+		if (size <= 7)
+			bytes += 1;
+		else if (size <= 11)
+			bytes += 2;
+		else if (size <= 16)
+			bytes += 3;
+		else
+			bytes += 4;
+		i++;
+	}
+	return (bytes);
+}

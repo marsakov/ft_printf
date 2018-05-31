@@ -17,23 +17,20 @@ t_frmt	check(char *str, int *i, va_list ap)
 	t_frmt		frmt;
 	char		*s;
 
-    frmt.max = 0;
-    frmt.min = 0;
-    frmt.modifier = 0;
-    frmt.spec = 0;
-    frmt.minus = 0;
-    frmt.plus = 0;
-    frmt.sharp = 0;
-    frmt.space = 0;
-    frmt.zero = 0;
-    frmt.prec = 0;
-	if ((ft_isdigit(str[(*i)]) && str[(*i)] != '0') || str[(*i)] == '*')
+	frmt.max = 0;
+	frmt.min = 0;
+	frmt.modifier = 0;
+	frmt.spec = 0;
+	frmt.minus = 0;
+	frmt.plus = 0;
+	frmt.sharp = 0;
+	frmt.space = 0;
+	frmt.zero = 0;
+	frmt.prec = 0;
+	while ((ft_isdigit(str[(*i)]) && str[(*i)] != '0') || str[(*i)] == '*')
 	{
-		if (str[(*i)] == '*')
-		{
+		if (str[(*i)] == '*' && ((*i)++))
 			frmt.min = va_arg(ap, int);
-			(*i)++;
-		}
 		else
 			frmt.min = ft_atoi_ptr(str, i);
 	}
@@ -45,64 +42,52 @@ t_frmt	check(char *str, int *i, va_list ap)
 			frmt.zero = 1;
 		else if (*s == '+')
 			frmt.plus = 1;
-        else if (*s == '-')
-            frmt.minus = 1;
+		else if (*s == '-')
+			frmt.minus = 1;
 		else
 			frmt.space = 1;
-		*i += 1;
-		if (str[(*i)] == '*')
-		{
+		if ((++(*i)) && str[(*i)] == '*' && ((*i)++))
 			frmt.min = va_arg(ap, int);
-			(*i)++;
-		}
 		else if (ft_isdigit(str[(*i)]) && str[(*i)] != '0')
 			frmt.min = ft_atoi_ptr(str, i);
 	}
 	if (str[(*i)] == '.')
 	{
 		frmt.prec = 1;
-		*i += 1;
-		if (str[(*i)] == '*')
-		{
+		if ((++(*i)) && str[(*i)] == '*' && ((*i)++))
 			frmt.max = va_arg(ap, int);
-			(*i)++;
-		}
 		else if (ft_isdigit(str[(*i)]))
 			frmt.max = ft_atoi_ptr(str, i);
 	}
 	if ((s = ft_strchr("hljz", str[(*i)])) != NULL)
 	{
-		if (str[(*i) + 1] == str[(*i)])
-		{
-			(*i)++;
+		if (str[(*i) + 1] == str[(*i)] && ((*i)++))
 			frmt.spec = ft_toupper(*s);
-		}
 		else
 			frmt.spec = *s;
 		(*i)++;
 	}
-	if ((s = ft_strchr("sSpdDioOuUxXcC%", str[(*i)])) != NULL)
-	{
+	if ((s = ft_strchr("nsSpdDioOuUxXcC%", str[(*i)])) != NULL && ((*i)++))
 		frmt.modifier = *s;
-		(*i)++;
-	}
-    if (frmt.min < 0 && (frmt.min *= -1) > 0)
-        frmt.minus = 1;
+	if (frmt.min < 0 && (frmt.min *= -1) > 0)
+		frmt.minus = 1;
+	if (frmt.max < 0 && (frmt.max = 0) == 0)
+		frmt.prec = 0;
 	return (frmt);
 }
 
-int		print(t_frmt frmt, va_list ap)
+int		print(t_frmt frmt, va_list ap, int n)
 {
 	intmax_t	d;
 	uintmax_t	u;
-    int         c;
+	int         c;
 
 	if (frmt.modifier == 'c')
-    {
-        c = va_arg(ap, int);
-        return (print_c(frmt, c));
-    }
-    else if (frmt.modifier == 's')
+	{
+		c = va_arg(ap, int);
+		return (print_c(frmt, c));
+	}
+	else if (frmt.modifier == 's')
 		return (print_s(frmt, ap));
 	else if (frmt.modifier == 'd' || frmt.modifier == 'i')
 	{
@@ -165,9 +150,11 @@ int		print(t_frmt frmt, va_list ap)
 		return (print_unicode_s(frmt, ap));
 	}
 	else if (frmt.modifier == '%')
-        print_c(frmt, '%');
-    else
-        return (repeat_char(' ', frmt.min - 1));
+		return (print_c(frmt, (int)'%'));
+	else if (frmt.modifier == 'n')
+		return (print_d(frmt, n));
+	else
+		return (repeat_char(' ', frmt.min - 1));
 }
 
 int		ft_printf(char *str, ...)
@@ -182,6 +169,8 @@ int		ft_printf(char *str, ...)
 	i = 0;
 	start = 0;
 	result = 0;
+	if (!ft_strcmp(str, "%"))
+		return (0);
 	while (str[i])
 	{
 		start = i;
@@ -189,7 +178,7 @@ int		ft_printf(char *str, ...)
 		{
 			i++;
 			frmt = check(str, &i, ap);
-			result += print(frmt, ap);
+			result += print(frmt, ap, result);
 		}
 		else
 		{

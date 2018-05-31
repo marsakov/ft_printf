@@ -3,13 +3,12 @@
 
 int main()
 {
-	setlocale(P_ALL, "");
+	setlocale(LC_ALL, "");
 
 	int p = 9999;
 
-	//int ft = 0;
-	int ft = ft_printf("  my : {%#.o %#.0o}\n", 0, 0);
-	int orig = printf("orig : {%#.o %#.0o}\n", 0, 0);
+	int ft = ft_printf("  my : {%05p} %n\n", 0, L"ÊM-M-^QÊM-^XØ‰∏M-ÂM-^O™ÁM-^L´„M-M-^B", 0);
+	int orig = printf("orig : {%05p} %n\n", 0, L"ÊM-M-^QÊM-^XØ‰∏M-ÂM-^O™ÁM-^L´„M-M-^B");
 	printf("%d || %d\n", ft, orig);
 	return 0;
 }

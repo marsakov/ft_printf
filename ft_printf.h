@@ -33,7 +33,7 @@ typedef struct	s_frmt
 
 int		ft_printf(char *str, ...);
 t_frmt	check(char *str, int *i, va_list ap);
-int		print(t_frmt frmt, va_list ap);
+int		print(t_frmt frmt, va_list ap, int n);
 
 int		repeat_char(char c, int n);
 int		count_base(intmax_t n, int base);
@@ -46,6 +46,7 @@ int		putnstr_u(wchar_t *s, int n);
 int		print_unicode(wchar_t value);
 int		print_unicode_s(t_frmt frmt, va_list ap);
 int		print_unicode_c(t_frmt frmt, va_list ap);
+int		count_unicode(wchar_t *s);
 int		print_c(t_frmt frmt, int c);
 int		print_s(t_frmt frmt, va_list ap);
 int		print_d(t_frmt frmt, intmax_t d);
