@@ -17,17 +17,7 @@ t_frmt	check(char *str, int *i, va_list ap)
 	t_frmt		frmt;
 	char		*s;
 
-	// frmt.max = 0;
-	// frmt.min = 0;
-	// frmt.modifier = 0;
-	// frmt.spec = 0;
-	// frmt.minus = 0;
-	// frmt.plus = 0;
-	// frmt.sharp = 0;
-	// frmt.space = 0;
-	// frmt.zero = 0;
-	// frmt.prec = 0;
-	frmt = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+	ft_bzero(&frmt, sizeof(t_frmt));
 	while ((ft_isdigit(str[(*i)]) && str[(*i)] != '0') || str[(*i)] == '*')
 	{
 		if (str[(*i)] == '*' && ((*i)++))
