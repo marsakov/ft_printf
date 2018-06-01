@@ -47,7 +47,7 @@ int		print_unicode(wchar_t value);
 int		print_unicode_s(t_frmt frmt, va_list ap);
 int		print_unicode_c(t_frmt frmt, va_list ap);
 int		count_unicode(wchar_t *s);
-int		print_c(t_frmt frmt, int c);
+int		print_c(t_frmt frmt, intmax_t c);
 int		print_s(t_frmt frmt, va_list ap);
 int		print_d(t_frmt frmt, intmax_t d);
 int		print_p(t_frmt frmt, va_list ap);

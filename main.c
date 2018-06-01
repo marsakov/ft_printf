@@ -7,8 +7,8 @@ int main()
 
 	int p = 9999;
 
-	int ft = ft_printf("  my : {%05p} %n\n", 0, L"ÊM-M-^QÊM-^XØ‰∏M-ÂM-^O™ÁM-^L´„M-M-^B", 0);
-	int orig = printf("orig : {%05p} %n\n", 0, L"ÊM-M-^QÊM-^XØ‰∏M-ÂM-^O™ÁM-^L´„M-M-^B");
+	int ft = ft_printf("  my : {%lc}\n", L'ÿ≠');
+	int orig = printf("orig : {%lc}\n", L'ÿ≠');
 	printf("%d || %d\n", ft, orig);
 	return 0;
 }

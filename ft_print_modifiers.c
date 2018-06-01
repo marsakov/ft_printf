@@ -92,7 +92,7 @@ int		print_s(t_frmt frmt, va_list ap)
 		return (repeat_char(' ', frmt.min - ft_strlen(s)) + ft_putstr(s));
 }
 
-int		print_c(t_frmt frmt, int c)
+int		print_c(t_frmt frmt, intmax_t c)
 {
 	if (frmt.minus)
 		return (ft_putchar(c) + repeat_char(' ', frmt.min - 1));
@@ -201,7 +201,7 @@ int		print_uox(t_frmt frmt, uintmax_t u)
 			if (ox == 1 && !frmt.space && !frmt.plus && (ox = 0) == 0)
 				bytes += ft_putchar('0');
 		}
-		bytes += repeat_char((frmt.zero && frmt.min > (frmt.max ? frmt.max : count_ubase(u, base))) ? '0' : ' ', frmt.min - (frmt.max ? frmt.max : count_ubase(u, base)) - (frmt.sharp && base == 16 ? 2 : 0) - (frmt.sharp && base == 8 ? 1 : 0));
+		bytes += repeat_char((frmt.zero && (frmt.min < (frmt.max ? frmt.max : count_ubase(u, base)) || !frmt.max)) ? '0' : ' ', frmt.min - (frmt.max ? frmt.max : count_ubase(u, base)) - (frmt.sharp && base == 16 ? 2 : 0) - (frmt.sharp && base == 8 ? 1 : 0));
 		if (ox && u != 0)
 			bytes += (ox == 2) ? ft_putstr((frmt.modifier == 'x' ? "0x" : "0X")) : ft_putchar('0');
 		if (frmt.max > count_ubase(u, base))
@@ -235,7 +235,7 @@ int		print_p(t_frmt frmt, va_list ap)
 	{
 		if ((frmt.min <= (frmt.max ? frmt.max : count_ubase(u, 16)) || !frmt.min || frmt.zero) && ((ox = 0) == 0))
 			bytes += ft_putstr("0x");
-		bytes += repeat_char((frmt.zero && frmt.min > (frmt.max ? frmt.max : count_ubase(u, 16))) ? '0' : ' ', frmt.min - (frmt.max ? frmt.max : count_ubase(u, 16)) - 2);
+		bytes += repeat_char((frmt.zero && (frmt.min < (frmt.max ? frmt.max : count_ubase(u, 16)) || !frmt.max)) ? '0' : ' ', frmt.min - (frmt.max ? frmt.max : count_ubase(u, 16)) - 2);
 		(ox) ? bytes += ft_putstr("0x") : NULL;
 		if (frmt.max > count_ubase(u, 16))
 			bytes += repeat_char('0', frmt.max - count_ubase(u, 16));

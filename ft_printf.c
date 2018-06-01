@@ -17,16 +17,17 @@ t_frmt	check(char *str, int *i, va_list ap)
 	t_frmt		frmt;
 	char		*s;
 
-	frmt.max = 0;
-	frmt.min = 0;
-	frmt.modifier = 0;
-	frmt.spec = 0;
-	frmt.minus = 0;
-	frmt.plus = 0;
-	frmt.sharp = 0;
-	frmt.space = 0;
-	frmt.zero = 0;
-	frmt.prec = 0;
+	// frmt.max = 0;
+	// frmt.min = 0;
+	// frmt.modifier = 0;
+	// frmt.spec = 0;
+	// frmt.minus = 0;
+	// frmt.plus = 0;
+	// frmt.sharp = 0;
+	// frmt.space = 0;
+	// frmt.zero = 0;
+	// frmt.prec = 0;
+	frmt = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 	while ((ft_isdigit(str[(*i)]) && str[(*i)] != '0') || str[(*i)] == '*')
 	{
 		if (str[(*i)] == '*' && ((*i)++))
@@ -82,14 +83,34 @@ int		print(t_frmt frmt, va_list ap, int n)
 	uintmax_t	u;
 	int         c;
 
+	if (frmt.modifier == 'C')
+	{
+		if (MB_CUR_MAX == 1)
+			frmt.modifier = 'c';
+		else
+			return (print_unicode_c(frmt, ap));
+	}
+	if (frmt.modifier == 'S')
+	{
+		if (MB_CUR_MAX == 1)
+			frmt.modifier = 's';
+		else
+			return (print_unicode_s(frmt, ap));
+	}
 	if (frmt.modifier == 'c')
 	{
-		c = va_arg(ap, int);
+		if (frmt.spec == 'l')
+			return (print_unicode_c(frmt, ap));
+		c = (char)va_arg(ap, int);
 		return (print_c(frmt, c));
 	}
-	else if (frmt.modifier == 's')
+	if (frmt.modifier == 's')
+	{
+		if (frmt.spec == 'l')
+			return (print_unicode_s(frmt, ap));
 		return (print_s(frmt, ap));
-	else if (frmt.modifier == 'd' || frmt.modifier == 'i')
+	}
+	if (frmt.modifier == 'd' || frmt.modifier == 'i')
 	{
 		if (frmt.spec == 'h')
 			d = (short)va_arg(ap, int);
@@ -137,12 +158,6 @@ int		print(t_frmt frmt, va_list ap, int n)
 	}
 	else if (frmt.modifier == 'p')
 		return (print_p(frmt, ap));
-	else if (frmt.modifier == 'C')
-	{
-		if (MB_CUR_MAX == 1)
-			return print_c(frmt, ap);
-		return (print_unicode_c(frmt, ap));
-	}
 	else if (frmt.modifier == 'S')
 	{
 		if (MB_CUR_MAX == 1)
@@ -162,7 +177,6 @@ int		ft_printf(char *str, ...)
 	int		start;
 	int		i;
 	int		result;
-	t_frmt	frmt;
 	va_list	ap;
 
 	va_start(ap, str);
@@ -174,12 +188,8 @@ int		ft_printf(char *str, ...)
 	while (str[i])
 	{
 		start = i;
-		if (str[i] == '%')
-		{
-			i++;
-			frmt = check(str, &i, ap);
-			result += print(frmt, ap, result);
-		}
+		if (str[i] == '%' && (++i))
+			result += print(check(str, &i, ap), ap, result);
 		else
 		{
 			while (str[i] && str[i] != '%')
