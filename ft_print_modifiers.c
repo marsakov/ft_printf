@@ -116,7 +116,7 @@ int		print_d(t_frmt frmt, intmax_t d)
 	if (frmt.minus)
 	{
 		if (minus || frmt.plus)
-			bytes += (minus) ? ft_putchar('-') : ft_putchar('+');
+			bytes += ft_putchar(minus ? '-' : '+');
 		bytes += (frmt.prec && frmt.max > count_base(d, 10)) ? repeat_char('0', frmt.max - count_base(d, 10)) : 0;
 		bytes += print_base(d, 10, 0, 0);
 		if ((frmt.prec && frmt.max < frmt.min) || !frmt.prec)
@@ -128,13 +128,13 @@ int		print_d(t_frmt frmt, intmax_t d)
 		if (frmt.space && !minus && !frmt.plus)
 			bytes += ft_putchar(' ');
 		if ((frmt.plus || minus) && frmt.zero && !frmt.prec)
-			bytes += (minus) ? ft_putchar('-') : ft_putchar('+');
+			bytes += ft_putchar(minus ? '-' : '+');
 		if (frmt.prec)
 			bytes += repeat_char(' ', frmt.min - (bytes ? bytes : minus) - ((frmt.max > count_base(d, 10) - (bytes ? bytes : minus)) ? frmt.max : count_base(d, 10)));
 		else
 			bytes += repeat_char((frmt.zero) ? '0' : ' ', frmt.min - count_base(d, 10) - (bytes ? bytes : minus));
 		if (((frmt.plus || minus) && !frmt.zero) || (frmt.prec && minus))
-			bytes += (minus) ? ft_putchar('-') : ft_putchar('+');
+			bytes += ft_putchar(minus ? '-' : '+');
 		bytes += (frmt.prec) ? repeat_char('0', frmt.max - count_base(d, 10)) : 0;
 		bytes += print_base(d, 10, 0, 0);
 		return (bytes);
@@ -150,7 +150,8 @@ int		print_d(t_frmt frmt, intmax_t d)
 	else
 	{
 		bytes += repeat_char(' ', frmt.min - minus - (frmt.max > count_base(d, 10) ? frmt.max : count_base(d, 10)));
-		bytes += (minus) ? ft_putchar('-') : 0;
+		if (minus)
+			ft_putchar('-');
 		bytes += repeat_char('0', frmt.max - count_base(d, 10));
 		return (bytes + minus + print_base(d, 10, 0, 0));
 	}

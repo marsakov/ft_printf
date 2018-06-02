@@ -175,9 +175,7 @@ int		ft_printf(char *str, ...)
 	result = 0;
 	if (!ft_strcmp(str, "%"))
 		return (0);
-	while (str[i])
-	{
-		start = i;
+	while (str[i] && (start = i) == i)
 		if (str[i] == '%' && (++i))
 			result += print(check(str, &i, ap), ap, result);
 		else
@@ -187,7 +185,6 @@ int		ft_printf(char *str, ...)
 			result += i - start;
 			ft_putnstr(str + start, i - start);
 		}
-	}
 	va_end(ap);
 	return (result);
 }
