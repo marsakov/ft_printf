@@ -12,7 +12,7 @@
 
 NAME = libftprintf.a
 TEST = ft_printf.out
-SRCS = ft_print_modifiers.c ft_print_unicode.c ft_printf.c ft_prints.c 
+SRCS = print_puox.c print_str.c print_dc.c print_unicode.c ft_printf.c prints.c counters.c
 
 OBJS = $(SRCS:.c=.o)
 
@@ -30,6 +30,6 @@ clean:
 	@rm -rf *.o libft/*.o
 
 fclean: clean
-	@rm -rf $(NAME)
+	@rm -rf $(NAME) libft/*.a
 
 re: fclean all
