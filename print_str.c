@@ -31,17 +31,26 @@ int		putnstr_u(wchar_t *s, int n)
 
 	i = 0;
 	bytes = 0;
-	while (s && s[i] && bytes < n)
+	while (s && s[i] && (bytes + counter_c(s[i])) <= n)
+		bytes += print_unicode(s[i++]);
+	if (bytes == 0 && n)
 		bytes += print_unicode(s[i++]);
 	return (bytes);
 }
 
-int		print_unicode_c(t_frmt frmt, va_list ap)
+int		counter_c(wchar_t c)
 {
-	wchar_t c;
+	int size;
 
-	c = va_arg(ap, wchar_t);
-	return (print_unicode(c));
+	size = count_base(c, 2);
+	if (size <= 7)
+		return (1);
+	else if (size <= 11)
+		return (2);
+	else if (size <= 16)
+		return (3);
+	else
+		return (4);
 }
 
 int		print_u_s(t_frmt frmt, va_list ap)
@@ -54,22 +63,23 @@ int		print_u_s(t_frmt frmt, va_list ap)
 		s = L"(null)";
 	if (frmt.minus)
 	{
-		bytes = (frmt.prec && frmt.max <= count_unicode(s)) ?
-			putnstr_u(s, frmt.max) : putstr_u(s);
+		bytes = (frmt.prec && frmt.max <= count_unicode(s, -1)) ?
+			putnstr_u(s, count_unicode(s, frmt.max)) : putstr_u(s);
 		return (bytes + repeat_char(' ', frmt.min - bytes));
 	}
 	else if (frmt.zero || frmt.plus || frmt.sharp)
 	{
-		bytes = (frmt.prec && frmt.max <= count_unicode(s)) ?
-			frmt.max : count_unicode(s);
+		bytes = (frmt.prec && frmt.max <= count_unicode(s, -1)) ?
+			count_unicode(s, frmt.max) : count_unicode(s, -1);
 		return (repeat_char((frmt.zero) ? '0' : ' ', frmt.min - bytes)
 			+ putnstr_u(s, bytes));
 	}
-	else if (frmt.prec && frmt.max <= count_unicode(s))
-		return (repeat_char(' ', frmt.min - frmt.max) +
+	else if (frmt.prec && frmt.max <= count_unicode(s, -1))
+		return (repeat_char(' ', frmt.min - count_unicode(s, frmt.max)) +
 			putnstr_u(s, frmt.max));
 	else
-		return (repeat_char(' ', frmt.min - count_unicode(s)) + putstr_u(s));
+		return (repeat_char(' ', frmt.min - count_unicode(s, -1))
+			+ putstr_u(s));
 }
 
 int		print_s(t_frmt frmt, va_list ap)

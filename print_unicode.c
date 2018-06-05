@@ -90,7 +90,7 @@ int				print_unicode(wchar_t value)
 	return (0);
 }
 
-int				count_unicode(wchar_t *s)
+int				count_unicode(wchar_t *s, int n)
 {
 	int bytes;
 	int	size;
@@ -98,18 +98,15 @@ int				count_unicode(wchar_t *s)
 
 	i = 0;
 	bytes = 0;
-	while (s[i])
+	if (n != -1)
 	{
-		size = count_base(s[i], 2);
-		if (size <= 7)
-			bytes += 1;
-		else if (size <= 11)
-			bytes += 2;
-		else if (size <= 16)
-			bytes += 3;
-		else
-			bytes += 4;
-		i++;
+		while (s && s[i] && (bytes + counter_c(s[i])) <= n)
+			bytes += counter_c(s[i++]);
+		if (bytes == 0 && n)
+			bytes += counter_c(s[i++]);
 	}
+	else
+		while (s && s[i])
+			bytes += counter_c(s[i++]);
 	return (bytes);
 }

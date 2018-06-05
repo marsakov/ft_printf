@@ -12,6 +12,14 @@
 
 #include "ft_printf.h"
 
+int		print_unicode_c(t_frmt frmt, va_list ap)
+{
+	wchar_t c;
+
+	c = va_arg(ap, wchar_t);
+	return (print_unicode(c));
+}
+
 int		print_c(t_frmt frmt, intmax_t c)
 {
 	if (frmt.minus)
