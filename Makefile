@@ -25,7 +25,7 @@ $(NAME):
 
 test:
 	@gcc -g -L. -lftprintf $(SRCS) main.c -o $(TEST)
- 
+
 clean:
 	@rm -rf *.o libft/*.o
 

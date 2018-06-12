@@ -18,8 +18,21 @@
 # include <unistd.h>
 # include <stdarg.h>
 
-# define STR (frmt.modifier == 'x') ? "0x" : "0X"
-# define UPPER (frmt.modifier == 'X') ? 1 : 0
+# define BLUE  "\033[0;34m"
+# define RED "\033[0;31m"
+# define GREEN "\033[0;32m"
+# define LGREEN "\033[0;32m"
+# define PURPLE "\033[0;35m"
+# define CYAN "\033[0;36m"
+# define LCYAN "\033[1;36m"
+# define YELLOW "\033[1;33m"
+# define LBLUE "\033[1;34m"
+# define PINK "\033[1;35m"
+# define WHITE "\033[1;37m"
+# define NC "\033[0m"
+
+# define STR (f.modifier == 'x') ? "0x" : "0X"
+# define UPPER (f.modifier == 'X') ? 1 : 0
 
 typedef struct	s_frmt
 {
@@ -40,6 +53,7 @@ typedef struct	s_frmt
 int				ft_printf(char *str, ...);
 void			start_check(char *str, va_list ap, t_frmt *frmt);
 void			check(char *str, va_list ap, t_frmt *frmt);
+void			finish_check(char *str, va_list ap, t_frmt *f);
 
 int				print(char *str, va_list ap, t_frmt *frmt);
 int				print2(char *str, va_list ap, t_frmt *frmt);

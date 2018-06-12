@@ -12,62 +12,74 @@
 
 #include "ft_printf.h"
 
-void	start_check(char *str, va_list ap, t_frmt *frmt)
+void	start_check(char *str, va_list ap, t_frmt *f)
 {
 	char *s;
 
-	while ((ft_isdigit(str[frmt->i]) && str[frmt->i] != '0')
-		|| str[frmt->i] == '*')
-		if (str[frmt->i] == '*' && ((frmt->i)++))
-			frmt->min = va_arg(ap, int);
+	ft_bzero(f, 8 * sizeof(int) + 2 * sizeof(char));
+	while ((ft_isdigit(str[f->i]) && str[f->i] != '0') || str[f->i] == '*')
+		if (str[f->i] == '*' && ((f->i)++))
+			f->min = va_arg(ap, int);
 		else
-			frmt->min = ft_atoi_ptr(str, &(frmt->i));
-	while ((s = ft_strchr("#0-+ ", str[frmt->i])) != NULL)
+			f->min = ft_atoi_ptr(str, &(f->i));
+	while ((s = ft_strchr("#0-+ ", str[f->i])) != NULL)
 	{
 		if (*s == '#')
-			frmt->sharp = 1;
+			f->sharp = 1;
 		else if (*s == '0')
-			frmt->zero = 1;
+			f->zero = 1;
 		else if (*s == '+')
-			frmt->plus = 1;
+			f->plus = 1;
 		else if (*s == '-')
-			frmt->minus = 1;
+			f->minus = 1;
 		else
-			frmt->space = 1;
-		if ((++(frmt->i)) && str[frmt->i] == '*' && ((frmt->i)++))
-			frmt->min = va_arg(ap, int);
-		else if (ft_isdigit(str[frmt->i]) && str[frmt->i] != '0')
-			frmt->min = ft_atoi_ptr(str, &(frmt->i));
+			f->space = 1;
+		if ((++(f->i)) && str[f->i] == '*' && ((f->i)++))
+			f->min = va_arg(ap, int);
+		else if (ft_isdigit(str[f->i]) && str[f->i] != '0')
+			f->min = ft_atoi_ptr(str, &(f->i));
 	}
 }
 
-void	check(char *str, va_list ap, t_frmt *frmt)
+void	finish_check(char *str, va_list ap, t_frmt *f)
 {
 	char *s;
 
-	start_check(str, ap, frmt);
-	if (str[frmt->i] == '.' && (frmt->prec = 1) == 1)
+	while ((s = ft_strchr("hljz", str[f->i])) != NULL)
 	{
-		if ((++(frmt->i)) && str[frmt->i] == '*' && ((frmt->i)++))
-			frmt->max = va_arg(ap, int);
-		else if (ft_isdigit(str[frmt->i]))
-			frmt->max = ft_atoi_ptr(str, &(frmt->i));
+		f->spec = (str[f->i + 1] == str[f->i] && ((f->i)++)) ?
+			ft_toupper(*s) : *s;
+		(f->i)++;
 	}
-	if ((s = ft_strchr("hljz", str[frmt->i])) != NULL)
-	{
-		if (str[frmt->i + 1] == str[frmt->i] && ((frmt->i)++))
-			frmt->spec = ft_toupper(*s);
-		else
-			frmt->spec = *s;
-		(frmt->i)++;
-	}
-	if ((s = ft_strchr("nsSpdDioOuUxXbBcC%", str[frmt->i])) != NULL
-		&& ((frmt->i)++))
-		frmt->modifier = *s;
-	if (frmt->min < 0 && (frmt->min *= -1) > 0)
-		frmt->minus = 1;
-	if (frmt->max < 0 && (frmt->max = 0) == 0)
-		frmt->prec = 0;
+	if ((s = ft_strchr("nsSpdDioOuUxXbBcC%", str[f->i])) != NULL && ((f->i)++))
+		f->modifier = *s;
+	if (f->min < 0 && (f->min *= -1) > 0)
+		f->minus = 1;
+}
+
+void	check(char *str, va_list ap, t_frmt *f)
+{
+	char *s;
+
+	start_check(str, ap, f);
+	while (str[f->i] == '.' && (f->prec = 1))
+		if ((++(f->i)) && str[f->i] == '*' && ((f->i)++))
+		{
+			f->max = va_arg(ap, int);
+			if (f->max < 0 && !(f->max = 0))
+				f->prec = 0;
+		}
+		else if (ft_isdigit(str[f->i]) || str[f->i] == '-')
+		{
+			f->max = ft_atoi_ptr(str, &(f->i));
+			if (f->max < 0 && (f->min = f->max * -1))
+			{
+				f->minus = 1;
+				f->prec = 0;
+				f->max = 0;
+			}
+		}
+	finish_check(str, ap, f);
 }
 
 int		ft_printf(char *str, ...)
