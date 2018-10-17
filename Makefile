@@ -18,7 +18,7 @@ OBJS = $(SRCS:.c=.o)
 
 all: $(NAME) 
 
-$(NAME):
+$(NAME): $(SRCS)
 	@gcc -c -Wall -Werror -Wextra libft/*.c -I libft/libft.h
 	@gcc -c $(SRCS)
 	@ar rc $(NAME) *.o
@@ -30,6 +30,6 @@ clean:
 	@rm -rf *.o libft/*.o
 
 fclean: clean
-	@rm -rf $(NAME) libft/*.a
+	@rm -rf $(NAME) libft/*.a ft_printf.out
 
 re: fclean all
